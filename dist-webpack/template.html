@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script type="text/javascript">
+      (function() {
+        return;
+        var oHead = document.head;
+        var oScript = document.createElement('script');
+        oScript.type = 'text/javascript';
+        oScript.crossOrigin = 'anonymous';
+        oScript.src = 'https://cdn.bootcss.com/eruda/1.5.4/eruda.min.js';
+        oHead.appendChild(oScript);
+        oScript.onload = function() {
+          eruda.init();
+        };
+        // 如果需要添加插件，请遵循官网教程引入
+        // https://github.com/liriliri/eruda
+      })();
+    </script>
+    <style>
+      body { margin: 0; }
+      canvas { vertical-align: middle }
+    </style>
+    <title>Test</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+</html>

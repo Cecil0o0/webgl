@@ -1,0 +1,11 @@
+/.vscode/
+/node_modules/
+npm-debug.log
+.DS_Store
+dist-rollup/*
+!dist-rollup/index.html
+!dist-rollup/favicon.ico
+dist-webpack/*
+!dist-webpack/template.html
+!dist-webpack/favicon.ico
+package-lock.json
