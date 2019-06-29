@@ -56,7 +56,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'dist-webpack/template.html',
+      template: 'dist/template.html',
       filename: 'index.html',
       inject: true,
       chunks: ['first']
