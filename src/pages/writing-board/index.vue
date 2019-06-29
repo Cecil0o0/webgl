@@ -34,6 +34,7 @@ export default {
     }
   },
   mounted() {
+    console.log('init app');
     this.setup();
   }
 };
