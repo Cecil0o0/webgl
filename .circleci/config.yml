@@ -1,0 +1,8 @@
+version: 2
+jobs:
+  build:
+    machine:
+      enabled: true
+    steps:
+      - run: ssh root@qingf.me "cd /var/www/html/3d/webgl;git pull;sh .circleci/build.sh"
+
