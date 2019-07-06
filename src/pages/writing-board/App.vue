@@ -27,12 +27,12 @@ export default {
         canvas.addEventListener('touchstart', downHandler);
         canvas.addEventListener('touchmove', moveHandler);
         canvas.addEventListener('touchend', upHandler);
-        this.disposers.push(addDoubleTapEventListener(canvas, clearHandler));
+        disposers.push(addDoubleTapEventListener(canvas, clearHandler));
       } else {
         canvas.addEventListener('mousedown', downHandler);
         canvas.addEventListener('mousemove', moveHandler);
         canvas.addEventListener('mouseup', upHandler);
-        this.disposers.push(addDbclickEventListner(canvas, clearHandler));
+        disposers.push(addDbclickEventListner(canvas, clearHandler));
       }
     }
   },
@@ -40,7 +40,7 @@ export default {
     this.setup();
   },
   unmounted() {
-    this.disposers.forEach(disposer => disposer());
+    disposers.forEach(disposer => disposer());
   }
 };
 </script>

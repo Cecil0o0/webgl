@@ -64,13 +64,15 @@ module.exports = {
       template: 'templates/index.html',
       filename: 'writing-board.html',
       inject: true,
-      chunks: ['first']
+      chunks: ['first'],
+      title: 'mini sketchpad'
     }),
     new HtmlWebpackPlugin({
       template: 'templates/index.html',
       filename: 'triangle.html',
       inject: true,
-      chunks: ['triangle']
+      chunks: ['triangle'],
+      title: 'welcome to triangles\' world'
     }),
     new VueLoaderPlugin(),
     new CopyWebpackPlugin([

@@ -1,7 +1,7 @@
 import squareVertexShaderSource from './point.vert';
 import redFragmentShaderSource from './point.frag';
 import {genShader, genProgram, clear} from 'webgl-helper';
-import {randomColor, getPlainArr} from 'utils';
+import {randomColor, getPlainArr, getDPR, setupCanvas} from 'utils';
 
 let canvas; let gl; let a_Position; let a_Screen_Size; let u_Color;
 
@@ -71,8 +71,8 @@ export function drawPoints(points) {
 
 export function start() {
   canvas = document.querySelector('#canvas');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const {width, height} = setupCanvas(canvas);
+  const DPR = getDPR();
 
   gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
@@ -97,8 +97,10 @@ export function start() {
   a_Screen_Size = gl.getAttribLocation(program, 'a_Screen_Size');
   // 获取片元着色器中的变量 u_Color 的引用
   u_Color = gl.getUniformLocation(program, 'u_Color');
+  // 获取 u_dpr 的引用
+  gl.uniform1f(gl.getUniformLocation(program, 'u_dpr'), DPR);
   // 为顶点着色器 a_Screen_Size 传递 cavnas的宽高
-  gl.vertexAttrib2f(a_Screen_Size, canvas.width, canvas.height);
+  gl.vertexAttrib2f(a_Screen_Size, width, height);
 
   clear(gl);
 }

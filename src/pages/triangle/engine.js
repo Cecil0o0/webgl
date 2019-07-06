@@ -1,7 +1,7 @@
 import {genShader, genProgram, clear} from 'webgl-helper';
 import triangleVertexShaderSource from './triangle.vert';
 import triangleFragmentShaderSource from './triangle.frag';
-import {randomColor} from 'utils';
+import {randomColor, getDPR} from 'utils';
 
 export let canvas;
 export let gl;
@@ -27,8 +27,15 @@ export function render(positions = []) {
 
 export function boot() {
   canvas = document.querySelector('canvas');
-  canvas.height = window.innerHeight;
-  canvas.width = window.innerWidth;
+  const DPR = getDPR();
+  const actualLogicSize = {
+    height: window.innerHeight,
+    width: window.innerWidth,
+  };
+  canvas.height = actualLogicSize.height * DPR;
+  canvas.width = actualLogicSize.width * DPR;
+
+  canvas.style = `width:${actualLogicSize.width}px;height:${actualLogicSize.height}px`;
 
   gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
@@ -61,7 +68,7 @@ export function boot() {
 
   // find a_Screen_Size pointer
   const a_Screen_Size = gl.getAttribLocation(triangleProgram, 'a_Screen_Size');
-  gl.vertexAttrib2f(a_Screen_Size, canvas.width, canvas.height);
+  gl.vertexAttrib2f(a_Screen_Size, actualLogicSize.width, actualLogicSize.height);
 
   // 启用顶点属性的接收数组能力
   gl.enableVertexAttribArray(a_Position);

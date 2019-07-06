@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script type="text/javascript">
@@ -26,10 +27,11 @@
       }
       canvas {
         vertical-align: middle;
+        width: 100vw;
+        height: 100vh;
       }
     </style>
     <script src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
-    <title>Writing Board</title>
   </head>
   <body>
     <div id="app"></div>

@@ -4,6 +4,8 @@ precision mediump float;
 attribute vec2 a_Position;
 // 接收 canvas 的宽高尺寸
 attribute vec2 a_Screen_Size;
+// 接收 dpr
+uniform float u_dpr;
 
 void main() {
   // start 将屏幕坐标系转化为裁剪坐标系
@@ -13,5 +15,5 @@ void main() {
   gl_Position = vec4(position, 0.0, 1.0);
   // end 将屏幕坐标系转化为裁剪坐标系
   // 声明要绘制的点的大小
-  gl_PointSize = 4.0;
+  gl_PointSize = 6.0 * u_dpr;
 }

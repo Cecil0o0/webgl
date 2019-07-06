@@ -25,3 +25,20 @@ export function getPlainArr(arr) {
     return acc;
   }, []);
 }
+
+export function getDPR() {
+  return window.devicePixelRatio || 1;
+}
+
+// canvas适配多倍屏
+export function setupCanvas(canvas) {
+  const DPR = getDPR() || 1;
+  const {width, height} = canvas.getBoundingClientRect();
+  canvas.width = width * DPR;
+  canvas.height = height * DPR;
+  canvas.style = `width:${width}px;height:${height}px;`;
+  return {
+    width,
+    height,
+  };
+}
