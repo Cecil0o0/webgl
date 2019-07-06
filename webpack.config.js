@@ -3,8 +3,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 module.exports = {
-  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  mode: isProduction ? 'production' : 'development',
   entry: {
     first: path.resolve('src/pages/writing-board'),
     triangle: path.resolve('src/pages/triangle')
@@ -56,6 +58,7 @@ module.exports = {
       }
     ]
   },
+  devtool: isProduction ? 'cheap-eval-source-map' : undefined,
   plugins: [
     new HtmlWebpackPlugin({
       template: 'templates/index.html',

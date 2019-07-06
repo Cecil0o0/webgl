@@ -11,7 +11,7 @@ void main() {
   position = position * vec2(1.0, -1.0);
   // 声明顶点位置
   gl_Position = vec4(position, 0.0, 1.0);
-  // end 讲屏幕坐标系转化为裁剪坐标系
+  // end 将屏幕坐标系转化为裁剪坐标系
   // 声明要绘制的点的大小
-  gl_PointSize = 10.0;
+  gl_PointSize = 4.0;
 }
