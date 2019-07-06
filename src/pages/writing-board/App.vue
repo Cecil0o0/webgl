@@ -8,8 +8,11 @@
 <script>
 import Controls from './controls';
 import { isMobile } from 'utils';
-import { addDoubleTapEventListener, addTapEventListener, addDbclickEventListner } from 'utils/tap';
+import { addDoubleTapEventListener, addTapEventListener } from 'utils/tap';
+import { addDbclickEventListner } from 'utils/click';
 import { start, clearHandler, downHandler, moveHandler, upHandler } from './engine';
+
+const disposers = [];
 
 export default {
   components: {
@@ -18,24 +21,26 @@ export default {
   methods: {
     setup() {
       start();
-      // setup
+      // setup gestures
       const canvas = document.querySelector('canvas');
       if (isMobile()) {
         canvas.addEventListener('touchstart', downHandler);
         canvas.addEventListener('touchmove', moveHandler);
         canvas.addEventListener('touchend', upHandler);
-        addDoubleTapEventListener(canvas, clearHandler);
+        this.disposers.push(addDoubleTapEventListener(canvas, clearHandler));
       } else {
         canvas.addEventListener('mousedown', downHandler);
         canvas.addEventListener('mousemove', moveHandler);
         canvas.addEventListener('mouseup', upHandler);
-        addDbclickEventListner(canvas, clearHandler);
+        this.disposers.push(addDbclickEventListner(canvas, clearHandler));
       }
     }
   },
   mounted() {
-    console.log('init app');
     this.setup();
+  },
+  unmounted() {
+    this.disposers.forEach(disposer => disposer());
   }
 };
 </script>

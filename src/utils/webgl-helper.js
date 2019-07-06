@@ -10,7 +10,7 @@ export function genShader(gl, shaderType, shaderSourceCode) {
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
     alert(gl.getShaderInfoLog(shader));
     return null;
-}
+  }
 
   return shader;
 }
@@ -24,4 +24,13 @@ export function genProgram(gl, vertexShader, fragmentShader) {
   gl.attachShader(program, fragmentShader);
 
   return program;
+}
+
+// 清空画布
+export function clear(gl) {
+  // Set clearColor
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+  // Clear the color buffer with specified clear color
+  gl.clear(gl.COLOR_BUFFER_BIT);
 }

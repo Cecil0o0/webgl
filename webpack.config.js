@@ -1,20 +1,21 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   entry: {
-    first: path.resolve('./src/demos/index')
+    first: path.resolve('src/pages/writing-board'),
+    triangle: path.resolve('src/pages/triangle')
   },
   output: {
-    path: path.resolve('writing-board'),
+    path: path.resolve('apps'),
     filename: '[name].js?q=[hash:8]'
   },
   resolve: {
     alias: {
       '@': path.resolve('src'),
-      'shader': path.resolve('src/shader'),
       'webgl-helper': path.resolve('src/utils/webgl-helper'),
       'utils': path.resolve('src/utils'),
       'vue$': 'vue/dist/vue.runtime.esm'
@@ -22,10 +23,11 @@ module.exports = {
     extensions: ['.js', '.json', '.vue', '.less']
   },
   devServer: {
-    contentBase: 'dist-webpack',
+    contentBase: 'apps',
     port: 10001,
     hot: true,
     open: true,
+    openPage: 'triangle.html',
     useLocalIp: true,
     overlay: true,
     host: '0.0.0.0'
@@ -56,11 +58,23 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'dist/template.html',
-      filename: 'index.html',
+      template: 'templates/index.html',
+      filename: 'writing-board.html',
       inject: true,
       chunks: ['first']
     }),
-    new VueLoaderPlugin()
+    new HtmlWebpackPlugin({
+      template: 'templates/index.html',
+      filename: 'triangle.html',
+      inject: true,
+      chunks: ['triangle']
+    }),
+    new VueLoaderPlugin(),
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve('static'),
+        to: path.resolve('apps')
+      }
+    ])
   ]
 }

@@ -1,6 +1,6 @@
-import squareVertexShaderSource from 'shader/vertex/1.vert';
-import redFragmentShaderSource from 'shader/fragment/1.frag';
-import {genShader, genProgram} from 'webgl-helper';
+import squareVertexShaderSource from './point.vert';
+import redFragmentShaderSource from './point.frag';
+import {genShader, genProgram, clear} from 'webgl-helper';
 import {randomColor, getPlainArr} from 'utils';
 
 let canvas; let gl; let a_Position; let a_Screen_Size; let u_Color;
@@ -39,7 +39,7 @@ export const upHandler = () => {
   }
 };
 export const clearHandler = () => {
-  clear();
+  clear(gl);
   redoLines = [getPlainArr(points)];
   points = [];
   cachedOneLine = [];
@@ -56,7 +56,7 @@ export const redoHandler = () => {
 };
 
 export function drawPoints(points) {
-  clear();
+  clear(gl);
   points.forEach((point) => {
     const rgb = point.color;
     // 为顶点着色器 a_Position 变量传递顶点坐标
@@ -67,14 +67,6 @@ export function drawPoints(points) {
     // gl.POINTS 即点图元（Rendering Primitives）
     gl.drawArrays(gl.POINTS, 0, 1);
   });
-}
-
-export function clear() {
-  // Set clearColor
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
-
-  // Clear the color buffer with specified clear color
-  gl.clear(gl.COLOR_BUFFER_BIT);
 }
 
 export function start() {
@@ -108,5 +100,5 @@ export function start() {
   // 为顶点着色器 a_Screen_Size 传递 cavnas的宽高
   gl.vertexAttrib2f(a_Screen_Size, canvas.width, canvas.height);
 
-  clear();
+  clear(gl);
 }

@@ -1,15 +1,17 @@
 export function randomColor() {
+  // 有限整数集的随机，包含边界
   const randomFunc = (min, max) => {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
   return {
-    r: randomFunc(0, 254),
-    g: randomFunc(0, 254),
-    b: randomFunc(0, 254),
+    // [0, 255]
+    r: randomFunc(0, 255),
+    g: randomFunc(0, 255),
+    b: randomFunc(0, 255),
     // [0.5, 1)
-    a: randomFunc(5, 9) / 10,
+    a: randomFunc(7, 9) / 10,
   };
 }
 

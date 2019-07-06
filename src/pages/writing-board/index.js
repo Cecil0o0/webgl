@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import WritingBoard from '../pages/writing-board';
+import App from './App';
 
 new Vue({
-  render: (h) => h(WritingBoard),
+  render: (h) => h(App),
 }).$mount('#app');
 
 // 禁用微信原生下拉的交互
