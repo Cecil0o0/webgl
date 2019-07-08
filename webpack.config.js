@@ -2,6 +2,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -80,6 +81,7 @@ module.exports = {
         from: path.resolve('static'),
         to: path.resolve('apps')
       }
-    ])
+    ]),
+    new CaseSensitivePathsPlugin()
   ]
 }
