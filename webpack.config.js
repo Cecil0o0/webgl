@@ -22,7 +22,7 @@ module.exports = {
       'utils': path.resolve('src/utils'),
       'vue$': 'vue/dist/vue.runtime.esm'
     },
-    extensions: ['.js', '.json', '.vue', '.less']
+    extensions: ['.ts', '.js', '.json', '.vue']
   },
   devServer: {
     contentBase: 'apps',
@@ -49,7 +49,7 @@ module.exports = {
         use: 'vue-loader'
       },
       {
-        test: /\.less$/,
+        test: /\.(le|c)ss$/,
         use: [
           'style-loader',
           'css-loader',

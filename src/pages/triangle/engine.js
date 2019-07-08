@@ -1,7 +1,8 @@
 import {genShader, genProgram, clear} from 'webgl-helper';
 import triangleVertexShaderSource from './triangle.vert';
 import triangleFragmentShaderSource from './triangle.frag';
-import {randomColor, getDPR} from 'utils';
+import {randomColor, setupCanvas} from 'utils';
+import {WEBGL_TRIANGLE_TYPES_ENUM} from './const';
 
 export let canvas;
 export let gl;
@@ -12,8 +13,13 @@ export let a_Position;
 export let u_Color;
 export let triangleProgram;
 
-export function render(positions = []) {
-  if (positions.length % 6 !== 0) return;
+export function render({
+  positions = [],
+  triangleType = WEBGL_TRIANGLE_TYPES_ENUM.TRIANGLES,
+} = {}) {
+  // 往缓冲区复制数据
+  pushBufferData(positions);
+
   clear(gl);
 
   const {r, g, b, a} = randomColor();
@@ -22,20 +28,16 @@ export function render(positions = []) {
   gl.uniform4f(u_Color, r, g, b, a);
 
   // 绘制三角图元
-  gl.drawArrays(gl.TRIANGLES, 0, positions.length / 2);
+  gl.drawArrays(gl[triangleType], 0, positions.length / 2);
+}
+
+export function pushBufferData(JSArray = []) {
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(JSArray), gl.DYNAMIC_DRAW);
 }
 
 export function boot() {
   canvas = document.querySelector('canvas');
-  const DPR = getDPR();
-  const actualLogicSize = {
-    height: window.innerHeight,
-    width: window.innerWidth,
-  };
-  canvas.height = actualLogicSize.height * DPR;
-  canvas.width = actualLogicSize.width * DPR;
-
-  canvas.style = `width:${actualLogicSize.width}px;height:${actualLogicSize.height}px`;
+  const {width, height} = setupCanvas(canvas);
 
   gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
@@ -68,7 +70,7 @@ export function boot() {
 
   // find a_Screen_Size pointer
   const a_Screen_Size = gl.getAttribLocation(triangleProgram, 'a_Screen_Size');
-  gl.vertexAttrib2f(a_Screen_Size, actualLogicSize.width, actualLogicSize.height);
+  gl.vertexAttrib2f(a_Screen_Size, width, height);
 
   // 启用顶点属性的接收数组能力
   gl.enableVertexAttribArray(a_Position);
