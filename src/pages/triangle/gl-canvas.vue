@@ -6,13 +6,13 @@
 </template>
 
 <script>
-import { boot, gl, render } from './engine';
+import { start, gl, render } from './engine';
 import { WEBGL_TRIANGLE_TYPES_ENUM } from './const';
 const positions = [];
 let innerPush = positions.push;
 export default {
   mounted() {
-    boot();
+    start();
     let proxyPush = (...value) => {
       innerPush.apply(positions, value);
       // 重新render

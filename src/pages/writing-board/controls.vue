@@ -21,7 +21,7 @@ export default {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 2vh;
+  bottom: 10vh;
   display: flex;
   width: 25vw;
   justify-content: space-between;

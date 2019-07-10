@@ -3,15 +3,18 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const { apps } = require('./config');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
   mode: isProduction ? 'production' : 'development',
-  entry: {
-    first: path.resolve('src/pages/writing-board'),
-    triangle: path.resolve('src/pages/triangle')
-  },
+  entry: apps.reduce((acc, value) => {
+    return {
+      ...acc,
+      [value.name]: path.resolve(value.entry)
+    }
+  }, {}),
   output: {
     path: path.resolve('apps'),
     filename: '[name].js?q=[hash:8]'
@@ -30,7 +33,7 @@ module.exports = {
     port: 10001,
     hot: true,
     open: true,
-    openPage: 'triangle.html',
+    openPage: 'line.html',
     useLocalIp: true,
     overlay: true,
     host: '0.0.0.0'
@@ -38,7 +41,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js[x]?$/,
+        test: /\.(t|j)s[x]?$/,
         use: 'babel-loader'
       },
       {
@@ -61,20 +64,13 @@ module.exports = {
   },
   devtool: isProduction ? 'cheap-eval-source-map' : undefined,
   plugins: [
-    new HtmlWebpackPlugin({
+    ...apps.map(value => new HtmlWebpackPlugin({
       template: 'templates/index.html',
-      filename: 'writing-board.html',
+      filename: `${value.name}.html`,
       inject: true,
-      chunks: ['first'],
-      title: 'mini sketchpad'
-    }),
-    new HtmlWebpackPlugin({
-      template: 'templates/index.html',
-      filename: 'triangle.html',
-      inject: true,
-      chunks: ['triangle'],
-      title: 'welcome to triangles\' world'
-    }),
+      chunks: [value.name],
+      title: value.title
+    })),
     new VueLoaderPlugin(),
     new CopyWebpackPlugin([
       {

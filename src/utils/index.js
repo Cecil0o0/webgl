@@ -1,3 +1,5 @@
+export * from './tiny';
+
 export function randomColor() {
   // 有限整数集的随机，包含边界
   const randomFunc = (min, max) => {

@@ -1,4 +1,4 @@
-export function genShader(gl, shaderType, shaderSourceCode) {
+export function genShader(gl, shaderType: WebGLShader, shaderSourceCode: string) {
   // Create a shader
   const shader = gl.createShader(shaderType);
   // Filling source code for the shader

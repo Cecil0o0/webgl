@@ -35,7 +35,7 @@ export function pushBufferData(JSArray = []) {
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(JSArray), gl.DYNAMIC_DRAW);
 }
 
-export function boot() {
+export function start() {
   canvas = document.querySelector('canvas');
   const {width, height} = setupCanvas(canvas);
 

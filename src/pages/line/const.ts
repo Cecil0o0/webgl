@@ -1,0 +1,5 @@
+export const WEBGL_LINE_TYPES_ENUM = {
+  LINES: 'LINES',
+  LINE_STRIP: 'LINE_STRIP',
+  LINE_LOOP: 'LINE_LOOP'
+}
