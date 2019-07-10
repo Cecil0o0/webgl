@@ -70,7 +70,7 @@ module.exports = {
       }
     ]
   },
-  devtool: isProduction ? 'cheap-eval-source-map' : undefined,
+  devtool: !isProduction ? 'source-map' : undefined,
   externals: {
     vue: 'Vue'
   },

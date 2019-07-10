@@ -5,7 +5,7 @@ import LineVertexShaderSource from './line.vert';
 import {WEBGL_LINE_TYPES_ENUM} from './const';
 
 let canvas: HTMLCanvasElement; let gl: WebGLRenderingContext; let u_Color: WebGLUniformLocation;
-let positions: number[] = [];
+export let positions: number[] = [];
 
 export function renderLine(type: string = Object.keys(WEBGL_LINE_TYPES_ENUM)[0]) {
   copyBufferData(positions);

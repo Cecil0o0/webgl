@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { start, renderLine, pushVertices } from './engine';
+import { start, renderLine, pushVertices, positions } from './engine';
 import { WEBGL_LINE_TYPES_ENUM } from './const';
 let tapTime = 0;
 let temp = [];
@@ -43,6 +43,10 @@ export default {
       this.reset();
     },
     choose(type) {
+      if (positions.length / 2 % 2 !== 0 && type === WEBGL_LINE_TYPES_ENUM.LINES) {
+        alert('切换到 LINES 前需要保证顶点个数为偶数个');
+        return;
+      }
       this.type.selected = type;
     },
     reset() {
