@@ -1,17 +1,17 @@
 exports.apps = [
   {
     name: 'writing-board',
-    title: 'mini sketchpad',
+    title: 'Mini Sketchpad',
     entry: 'src/pages/writing-board'
   },
   {
     name: 'line',
-    title: 'magic lines',
+    title: 'Magic Lines',
     entry: 'src/pages/line'
   },
   {
     name: 'triangle',
-    title: 'welcome to triangles\' world',
+    title: 'Welcome To Triangles\' World',
     entry: 'src/pages/triangle'
   }
 ]

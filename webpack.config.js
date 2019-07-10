@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
@@ -12,8 +12,8 @@ module.exports = {
   entry: apps.reduce((acc, value) => {
     return {
       ...acc,
-      [value.name]: path.resolve(value.entry)
-    }
+      [value.name]: [path.resolve('./src/global'), path.resolve(value.entry)]
+    };
   }, {}),
   output: {
     path: path.resolve('apps'),
@@ -21,10 +21,11 @@ module.exports = {
   },
   resolve: {
     alias: {
+      config: path.resolve('config'),
       '@': path.resolve('src'),
       'webgl-helper': path.resolve('src/utils/webgl-helper'),
-      'utils': path.resolve('src/utils'),
-      'vue$': 'vue/dist/vue.runtime.esm'
+      utils: path.resolve('src/utils'),
+      vue$: 'vue/dist/vue.runtime.esm'
     },
     extensions: ['.ts', '.js', '.json', '.vue']
   },
@@ -56,21 +57,34 @@ module.exports = {
         test: /\.(le|c)ss$/,
         use: [
           'style-loader',
-          'css-loader',
+          { loader: 'css-loader', options: { importLoaders: 1 } },
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: [require('autoprefixer')()]
+            }
+          },
           'less-loader'
         ]
       }
     ]
   },
   devtool: isProduction ? 'cheap-eval-source-map' : undefined,
+  externals: {
+    vue: 'Vue'
+  },
   plugins: [
-    ...apps.map(value => new HtmlWebpackPlugin({
-      template: 'templates/index.html',
-      filename: `${value.name}.html`,
-      inject: true,
-      chunks: [value.name],
-      title: value.title
-    })),
+    ...apps.map(
+      value =>
+        new HtmlWebpackPlugin({
+          template: 'templates/index.html',
+          filename: `${value.name}.html`,
+          inject: true,
+          chunks: [value.name],
+          title: value.title
+        })
+    ),
     new VueLoaderPlugin(),
     new CopyWebpackPlugin([
       {
@@ -80,4 +94,4 @@ module.exports = {
     ]),
     new CaseSensitivePathsPlugin()
   ]
-}
+};

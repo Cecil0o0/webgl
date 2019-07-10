@@ -1,24 +1,29 @@
 <template>
-  <GlCanvas>
-    <template v-slot="{webglTriangleTypes, clickHandler, selectedType}">
-      <div class="controls">
-        <div
-          v-for="(entry, idx) in webglTriangleTypes"
-          :key="idx"
-          @click="clickHandler(entry[0])"
-          :class="{active:selectedType === entry[0]}"
-        >{{entry[1]}}</div>
-      </div>
-    </template>
-  </GlCanvas>
+  <div>
+    <GlCanvas>
+      <template v-slot="{webglTriangleTypes, clickHandler, selectedType}">
+        <div class="controls">
+          <div
+            v-for="(entry, idx) in webglTriangleTypes"
+            :key="idx"
+            @click="clickHandler(entry[0])"
+            :class="{active:selectedType === entry[0]}"
+          >{{entry[1]}}</div>
+        </div>
+      </template>
+    </GlCanvas>
+    <Menu />
+  </div>
 </template>
 
 <script>
 import GlCanvas from './gl-canvas';
+import Menu from '@/components/menu';
 export default {
   name: 'app',
   components: {
-    GlCanvas
+    GlCanvas,
+    Menu
   }
 };
 </script>

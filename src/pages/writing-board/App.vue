@@ -2,11 +2,13 @@
   <div>
     <Controls/>
     <canvas id="canvas"/>
+    <Menu />
   </div>
 </template>
 
 <script>
 import Controls from './controls';
+import Menu from '@/components/menu';
 import { isMobile } from 'utils';
 import { addDoubleTapEventListener, addTapEventListener } from 'utils/tap';
 import { addDbclickEventListner } from 'utils/click';
@@ -16,7 +18,8 @@ const disposers = [];
 
 export default {
   components: {
-    Controls
+    Controls,
+    Menu
   },
   methods: {
     setup() {
