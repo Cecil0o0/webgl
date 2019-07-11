@@ -1,12 +1,12 @@
-export function addTapEventListener(element, handler) {
-  const point = {};
-  const touchstartHandler = (e) => {
+export function addTapEventListener(element: HTMLElement, handler: EventListener): Function {
+  const point: { sx?: number, sy?: number, st?: number} = {};
+  const touchstartHandler = (e: TouchEvent) => {
     const touch = e.touches[0];
     point.sx = touch.pageX;
     point.sy = touch.pageY;
     point.st = Date.now();
   };
-  const touchendHandler = (e) => {
+  const touchendHandler = (e: TouchEvent) => {
     const touch = e.changedTouches[0];
     if (Math.abs(touch.pageX - point.sx) < 20 && Math.abs(touch.pageY - point.sy) < 20 && Date.now() - point.st < 300) {
       handler(e);
@@ -20,9 +20,9 @@ export function addTapEventListener(element, handler) {
   };
 }
 
-export function addDoubleTapEventListener(element, handler) {
+export function addDoubleTapEventListener(element: HTMLElement, handler: EventListener): Function {
   let time = 0;
-  return addTapEventListener(element, (e) => {
+  return addTapEventListener(element, (e: TouchEvent) => {
     time ++;
     const timer = setTimeout(() => {
       time = 0;

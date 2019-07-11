@@ -1,10 +1,13 @@
-import {genShader, genProgram, clear} from 'webgl-helper';
-import {setupCanvas, randomColor, isValid} from 'utils';
+import {genShader, genProgram, clear} from 'utils/webgl-helper';
+import {setupCanvas, randomColor, getDPR} from 'utils';
 import LineFragmentShaderSource from './line.frag';
 import LineVertexShaderSource from './line.vert';
 import {WEBGL_LINE_TYPES_ENUM} from './const';
 
-let canvas: HTMLCanvasElement; let gl: WebGLRenderingContext; let u_Color: WebGLUniformLocation;
+let canvas: HTMLCanvasElement;
+let gl: WebGLRenderingContext & { [key: string]: any };
+let u_Color: WebGLUniformLocation;
+const dpr = getDPR();
 export let positions: number[] = [];
 
 export function renderLine(type: string = Object.keys(WEBGL_LINE_TYPES_ENUM)[0]) {
@@ -16,6 +19,7 @@ export function renderLine(type: string = Object.keys(WEBGL_LINE_TYPES_ENUM)[0])
 
   clear(gl);
   gl.drawArrays(gl[type], 0, positions.length / 2);
+  gl.drawArrays(gl.POINTS, 0, positions.length / 2);
 }
 
 export function reset() {
@@ -23,7 +27,7 @@ export function reset() {
 }
 
 export function pushVertices(values: number[]) {
-  positions.push(...values)
+  positions.push(...values);
 }
 
 export function copyBufferData(jsArray: number[]) {
@@ -57,8 +61,10 @@ export function start() {
   const a_Position = gl.getAttribLocation(LineProgram, 'a_Position');
   // get the a_Screen_Size pointer
   const a_Screen_Size = gl.getAttribLocation(LineProgram, 'a_Screen_Size');
-  // console.log(canvas.width, canvas.height)
   gl.vertexAttrib2f(a_Screen_Size, width, height);
+  // get the a_Dpr pointer
+  const a_Dpr = gl.getAttribLocation(LineProgram, 'a_Dpr');
+  gl.vertexAttrib1f(a_Dpr, dpr);
   // get the u_Color pointer
   u_Color = gl.getUniformLocation(LineProgram, 'u_Color');
 

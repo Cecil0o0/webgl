@@ -1,4 +1,4 @@
-export function genShader(gl, shaderType: WebGLShader, shaderSourceCode: string) {
+export function genShader(gl: WebGLRenderingContext, shaderType: number, shaderSourceCode: string) {
   // Create a shader
   const shader = gl.createShader(shaderType);
   // Filling source code for the shader
@@ -15,7 +15,7 @@ export function genShader(gl, shaderType: WebGLShader, shaderSourceCode: string)
   return shader;
 }
 
-export function genProgram(gl, vertexShader, fragmentShader) {
+export function genProgram(gl: WebGLRenderingContext, vertexShader: string, fragmentShader: string) {
   // Create shader program
   const program = gl.createProgram();
   // Attach vertex shader to program
@@ -27,7 +27,7 @@ export function genProgram(gl, vertexShader, fragmentShader) {
 }
 
 // 清空画布
-export function clear(gl) {
+export function clear(gl: WebGLRenderingContext) {
   // Set clearColor
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 

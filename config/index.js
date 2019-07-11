@@ -11,7 +11,7 @@ exports.apps = [
   },
   {
     name: 'triangle',
-    title: 'Welcome To Triangles\' World',
+    title: 'Triangles\' World',
     entry: 'src/pages/triangle'
   }
 ]

@@ -3,8 +3,14 @@
     "target": "esnext",
     "moduleResolution": "node",
     "allowJs": true,
-    "outDir": "",
-    "noImplicitAny": false
+    "outDir": "apps",
+    "noImplicitAny": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "src/*"
+      ]
+    }
   },
   "include": [
     "src",

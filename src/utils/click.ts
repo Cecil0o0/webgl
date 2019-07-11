@@ -1,6 +1,6 @@
-export function addDbclickEventListner(element, handler) {
+export function addDbclickEventListner(element: HTMLElement, handler: EventListener): Function {
   let time = 0;
-  const clickHandler = (e) => {
+  const clickHandler: EventListener = (e: Event) => {
     time ++;
     const timer = setTimeout(() => {
       time = 0;
