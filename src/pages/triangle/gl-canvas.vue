@@ -7,14 +7,15 @@
 
 <script>
 import { start, gl, render } from './engine';
-import { WEBGL_TRIANGLE_TYPES_ENUM } from './const';
+import { WEBGL_TRIANGLE_TYPES } from './const';
+import { randomColor } from 'utils';
 const positions = [];
 let innerPush = positions.push;
 export default {
   mounted() {
     start();
     let proxyPush = (...value) => {
-      innerPush.apply(positions, value);
+      innerPush.apply(positions, [...value, ...Object.values(randomColor())]);
       // 重新render
       this.reRender();
     };
@@ -30,8 +31,8 @@ export default {
   },
   data() {
     return {
-      types: Object.entries(WEBGL_TRIANGLE_TYPES_ENUM),
-      selectedType: Object.keys(WEBGL_TRIANGLE_TYPES_ENUM)[0]
+      types: Object.entries(WEBGL_TRIANGLE_TYPES),
+      selectedType: Object.keys(WEBGL_TRIANGLE_TYPES)[0]
     };
   },
   methods: {

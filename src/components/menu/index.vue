@@ -19,7 +19,7 @@ export default {
       collapse: true,
       items: apps.map(app => ({
         title: app.title,
-        click: () => window.location.href = `${app.name}.html`
+        click: () => window.location.replace(`${app.name}.html`)
       }))
     }
   }

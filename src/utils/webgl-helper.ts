@@ -15,7 +15,7 @@ export function genShader(gl: WebGLRenderingContext, shaderType: number, shaderS
   return shader;
 }
 
-export function genProgram(gl: WebGLRenderingContext, vertexShader: string, fragmentShader: string) {
+export function genProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader) {
   // Create shader program
   const program = gl.createProgram();
   // Attach vertex shader to program
