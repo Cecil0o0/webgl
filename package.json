@@ -8,7 +8,8 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "webpack-dev-server",
-    "build": "NODE_ENV=production webpack"
+    "build": "NODE_ENV=production webpack",
+    "ci": "ssh root@qingf.me \"source ~/.zshrc;wd webgl;git checkout .;git pull;sh .circleci/build.sh\""
   },
   "author": "qingf",
   "license": "MIT",
@@ -45,7 +46,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "post-receive": "npm run ci"
     }
   },
   "lint-staged": {
