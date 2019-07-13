@@ -13,5 +13,10 @@ exports.apps = [
     name: 'triangle',
     title: 'Triangles\' World',
     entry: 'src/pages/triangle'
+  },
+  {
+    name: 'triangle-applyment',
+    title: 'Apply Triangle',
+    entry: 'src/pages/triangle-applyment'
   }
 ]

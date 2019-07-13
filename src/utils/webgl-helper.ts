@@ -15,7 +15,11 @@ export function genShader(gl: WebGLRenderingContext, shaderType: number, shaderS
   return shader;
 }
 
-export function genProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader) {
+export function genProgram(
+  gl: WebGLRenderingContext,
+  vertexShader: WebGLShader,
+  fragmentShader: WebGLShader
+) {
   // Create shader program
   const program = gl.createProgram();
   // Attach vertex shader to program
@@ -24,6 +28,22 @@ export function genProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader,
   gl.attachShader(program, fragmentShader);
 
   return program;
+}
+
+export function genProgramWithShaderSource({
+  gl,
+  vertexShaderSource,
+  fragmentShaderSource,
+}: {
+  gl: WebGLRenderingContext;
+  vertexShaderSource: string;
+  fragmentShaderSource: string;
+}) {
+  return genProgram(
+    gl,
+    genShader(gl, gl.VERTEX_SHADER, vertexShaderSource),
+    genShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource)
+  );
 }
 
 // 清空画布

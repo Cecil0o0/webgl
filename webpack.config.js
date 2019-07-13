@@ -3,9 +3,17 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const { apps } = require('./config');
+let { apps } = require('./config');
 
 const isProduction = process.env.NODE_ENV === 'production';
+
+// 开发模式只加载需要开发的entry
+if (!isProduction) {
+  const devPage = process.env.DEV_PAGE;
+  if (devPage) {
+    apps = apps.filter(entry => entry.name === devPage);
+  }
+}
 
 module.exports = {
   mode: isProduction ? 'production' : 'development',
