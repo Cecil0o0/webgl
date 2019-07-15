@@ -38,7 +38,7 @@ module.exports = {
     extensions: ['.ts', '.js', '.json', '.vue']
   },
   devServer: {
-    contentBase: 'apps',
+    contentBase: ['static'],
     port: 10001,
     hot: true,
     open: true,
@@ -75,6 +75,10 @@ module.exports = {
           },
           'less-loader'
         ]
+      },
+      {
+        test: /\.(jpg|jpeg|png|gif)$/i,
+        use: 'url-loader'
       }
     ]
   },

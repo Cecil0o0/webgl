@@ -18,5 +18,10 @@ exports.apps = [
     name: 'triangle-applyment',
     title: 'Apply Triangle',
     entry: 'src/pages/triangle-applyment'
+  },
+  {
+    name: 'texture',
+    title: 'Render Texture',
+    entry: 'src/pages/texture'
   }
 ]
