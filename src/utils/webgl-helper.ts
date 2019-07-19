@@ -1,3 +1,5 @@
+import { VertexAttribPointerConfig } from "types";
+
 export function genShader(gl: WebGLRenderingContext, shaderType: number, shaderSourceCode: string) {
   // Create a shader
   const shader = gl.createShader(shaderType);
@@ -27,7 +29,15 @@ export function genProgram(
   // Attach fragment shader to program
   gl.attachShader(program, fragmentShader);
 
-  return program;
+  gl.linkProgram(program);
+  let result = gl.getProgramParameter(program, gl.LINK_STATUS);
+  if (result) {
+    console.log('着色器程序创建成功');
+    return program;
+  }
+  let errorlog = gl.getProgramInfoLog(program);
+  gl.deleteProgram(program);
+  throw errorlog;
 }
 
 export function genProgramWithShaderSource({
@@ -53,4 +63,23 @@ export function clear(gl: WebGLRenderingContext) {
 
   // Clear the color buffer with specified clear color
   gl.clear(gl.COLOR_BUFFER_BIT);
+}
+
+export function getContext(canvas: HTMLCanvasElement) {
+  return canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+}
+
+export function createBuffer(gl: WebGLRenderingContext, attribute: number, vertexAttribPointer: VertexAttribPointerConfig): WebGLBuffer {
+  let {size, type, normalized, stride, offset} = vertexAttribPointer;
+  const buffer = gl.createBuffer();
+  gl.enableVertexAttribArray(attribute);
+  gl.vertexAttribPointer(
+    attribute,
+    size,
+    type || gl.FLOAT,
+    normalized || false,
+    stride || 0,
+    offset || 0
+  )
+  return buffer;
 }

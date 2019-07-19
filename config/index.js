@@ -23,5 +23,10 @@ exports.apps = [
     name: 'texture',
     title: 'Render Texture',
     entry: 'src/pages/texture'
+  },
+  {
+    name: 'cube',
+    title: 'Render Cube',
+    entry: 'src/pages/cube'
   }
 ]

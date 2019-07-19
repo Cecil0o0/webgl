@@ -2,6 +2,7 @@ import rectangleVertexShaderSource from './rectangle.vert';
 import rectangleFragmentShaderSource from './rectangle.frag';
 import { genProgramWithShaderSource, clear } from 'utils/webgl-helper';
 import { transformStartXY, setupCanvas } from 'utils';
+import { raf } from 'utils/animation';
 
 let gl: WebGLRenderingContext;
 let canvas: HTMLCanvasElement;
@@ -23,8 +24,8 @@ const indices = [
 ]
 
 export function render() {
-  renderUseTriangles()
-  renderUseTriangleFan()
+  // renderUseTriangles()
+  // renderUseTriangleFan()
   renderCircle()
 }
 
@@ -50,25 +51,36 @@ export function renderUseTriangleFan() {
   gl.drawArrays(gl.TRIANGLE_FAN, 0, positions.length / 6);
 }
 
-function renderCircle() {
+function renderCircle(n = 40) {
   const radius = 100;
-  const x = 50;
-  const y = 50;
-  const n = 40;
+  const x = 0;
+  const y = 0;
   const vertices = [
-    x, y, 255, 0, 255, 1,
+    x, y, 0, 243, 255, 1,
   ]
   for(let i = 0; i <= n; i ++) {
     let radian = i * 2 * Math.PI / n;
-    vertices.push(x + Math.sin(radian) * radius, y - Math.cos(radian) * radius, 255, 0, 0, 1);
+    vertices.push(x + Math.sin(radian) * radius, y - Math.cos(radian) * radius, 126, 20, 255, 1);
   }
-  transformStartXY(137.5, 400, vertices);
+  transformStartXY(window.innerWidth / 2, window.innerHeight / 2, vertices);
   const buffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
   reDefineHowtoReadData();
   gl.drawArrays(gl.TRIANGLE_FAN, 0, vertices.length / 6);
 }
+
+let triangleNum = 3;
+let rafManange = raf(() => {
+  if (triangleNum > 50) {
+    rafManange.stop()
+    // 释放引用，让GC回收内存
+    rafManange = null;
+  };
+  clear(gl)
+  renderCircle(triangleNum++)
+}, 2);
+setTimeout(rafManange.start, 2e3);
 
 export function start() {
   canvas = document.querySelector('canvas');
