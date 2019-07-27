@@ -1,14 +1,13 @@
 <template>
-  <div>
+  <Layout>
     <Controls/>
     <canvas id="canvas"/>
-    <Menu />
-  </div>
+  </Layout>
 </template>
 
 <script>
 import Controls from './controls';
-import Menu from '@/components/menu';
+import Layout from '@/components/layout';
 import { isMobile } from 'engine';
 import { addDoubleTapEventListener, addTapEventListener } from 'engine/tap';
 import { addDbclickEventListner } from 'engine/click';
@@ -19,7 +18,7 @@ const disposers = [];
 export default {
   components: {
     Controls,
-    Menu
+    Layout
   },
   methods: {
     setup() {

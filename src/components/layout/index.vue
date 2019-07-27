@@ -13,4 +13,8 @@ export default Vue.extend({
     Menu
   }
 })
+// 禁用微信原生下拉的交互
+document.querySelector('body').addEventListener('touchmove', (e) => {
+  e.preventDefault();
+});
 </script>
