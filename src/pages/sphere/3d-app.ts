@@ -25,7 +25,7 @@ function animate() {
   if (deg > 359) deg = 0;
   clear(gl);
 
-  matrix = ortho(-aspect * 2, aspect * 2, -2, 2, 100, -100);
+  matrix = ortho(-aspect * 2.5, aspect * 2.5, -2.5, 2.5, 100, -100);
   rotateX(matrix, deg2radian(deg += .4), matrix);
   rotateY(matrix, deg2radian(deg += .4), matrix);
   gl.uniformMatrix4fv(u_Matrix, false, matrix);
