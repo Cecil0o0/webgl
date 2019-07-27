@@ -43,6 +43,7 @@
     "webpack-dev-server": "^3.2.0"
   },
   "dependencies": {
+    "mathjs": "^6.0.3",
     "vue": "^2.6.10"
   },
   "husky": {

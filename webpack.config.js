@@ -42,7 +42,7 @@ module.exports = {
     port: 10001,
     hot: true,
     open: true,
-    openPage: 'line.html',
+    openPage: apps[0].name + '.html',
     useLocalIp: true,
     overlay: true,
     host: '0.0.0.0'

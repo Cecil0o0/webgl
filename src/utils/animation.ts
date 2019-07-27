@@ -62,6 +62,12 @@ export function raf(executor: (HRT: DOMHighResTimeStamp) => void, fps: number) {
     // 一般来说一定要调用stop，否则就会一直执行animate从而产生无用开销
     stop() {
       status = 4
+    },
+    get status() {
+      return status;
+    },
+    get isRunning() {
+      return [1, 3].includes(status)
     }
   }
 }

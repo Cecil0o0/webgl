@@ -1,11 +1,20 @@
 import CubeVertexShaderSource from './cube.vert';
 import CubeFragmentShaderSource from './cube.frag';
-import { setupCanvas } from 'utils';
+import { setupCanvas, deg2radian } from 'utils';
 import { genProgramWithShaderSource, clear } from 'utils/webgl-helper';
-import { getMatrixByFov } from 'utils/webl-matrix';
+import { ortho, rotateY, Matrix, rotateX } from 'utils/webl-matrix';
+import { raf } from 'utils/animation';
 
 let canvas: HTMLCanvasElement;
 let gl: WebGLRenderingContext;
+let matrix: Matrix;
+let u_Matrix: WebGLUniformLocation;
+let aspect: number;
+
+let cube: {
+  indices?: Uint8Array,
+  vertices?: Float32Array
+} = {};
 
 export type ColorArray = [number, number, number, number]
 
@@ -73,24 +82,38 @@ export function createCube(width: number, height: number, depth: number) {
   }
 }
 
+let deg = 3;
+export let manager = raf(animate, 50);
+function animate() {
+  if (deg > 359) deg = 0;
+  clear(gl);
+  matrix = ortho(-aspect * 3, aspect * 3, -3, 3, 100, -100);
+  matrix = rotateY(matrix, deg2radian(deg++))
+  matrix = rotateX(matrix, deg2radian(deg++))
+  gl.uniformMatrix4fv(u_Matrix, false, matrix);
+  gl.drawElements(gl.TRIANGLES, cube.indices.length, gl.UNSIGNED_BYTE, 0);
+}
+
+
 export function render() {
   const { indices, vertices } = createCube(1, 1, 1);
+  cube.indices = indices;
+  cube.vertices = vertices;
+  gl.enable(gl.CULL_FACE);
 
   // 啥都不说，直接复制数据到缓存区
   gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-
-  gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_BYTE, 0);
+  manager.start()
 }
 
 export function start() {
   canvas = document.querySelector('canvas');
-  const { width, height } = setupCanvas(canvas);
+  setupCanvas(canvas);
+  aspect = canvas.width / canvas.height
   gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-  // gl.enable(gl.CULL_FACE);
-  // gl.cullFace(gl.FRONT);
 
   const program = genProgramWithShaderSource({
     gl,
@@ -100,6 +123,7 @@ export function start() {
 
   gl.useProgram(program);
 
+  u_Matrix = gl.getUniformLocation(program, 'u_Matrix');
   const a_Position = gl.getAttribLocation(program, 'a_Position');
   const a_Color = gl.getAttribLocation(program, 'a_Color');
   gl.enableVertexAttribArray(a_Position);
@@ -124,10 +148,6 @@ export function start() {
     28,
     12
   )
-
-  const perspectiveMatrix = getMatrixByFov(135, width / height, 1, 100);
-  const u_Matrix = gl.getUniformLocation(program, 'u_Matrix');
-  gl.uniformMatrix4fv(u_Matrix, false, perspectiveMatrix);
 
   clear(gl);
 }

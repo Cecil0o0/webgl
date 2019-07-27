@@ -55,3 +55,11 @@ export function transformStartXY(x: number, y: number, vertices: number[]) {
     vertices[i] += y;
   }
 }
+
+export function deg2radian(deg: number) {
+  return Math.PI / 180 * deg;
+}
+
+export function radian2deg(radian: number) {
+  return 180 * radian / Math.PI;
+}
