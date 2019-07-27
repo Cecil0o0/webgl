@@ -35,7 +35,7 @@ export function getDPR(): number {
 
 // canvas适配多倍屏
 export function setupCanvas(canvas: HTMLCanvasElement): { width: number, height: number } {
-  const DPR = getDPR() >= 2 ? 2 : 1;
+  const DPR = getDPR();
   const {width, height} = canvas.getBoundingClientRect();
   canvas.width = width * DPR;
   canvas.height = height * DPR;
