@@ -15,6 +15,11 @@ export default {
   mounted() {
     start()
     render()
+  },
+  methods: {
+    clickHandler() {
+      manager.isRunning ? manager.pause() : manager.resume();
+    }
   }
 }
 </script>

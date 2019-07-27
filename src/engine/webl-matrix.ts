@@ -86,7 +86,7 @@ export function rotationY(radian: number) {
   return m;
 }
 
-export function rotateY(m: Matrix, angle: number, target?: Matrix) {
+export function rotateY(m: Matrix, radian: number, target?: Matrix) {
   target = target || new Float32Array(16);
 
   const m00 = m[0];
@@ -97,8 +97,8 @@ export function rotateY(m: Matrix, angle: number, target?: Matrix) {
   const m21 = m[9];
   const m22 = m[10];
   const m23 = m[11];
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
+  const cos = Math.cos(radian);
+  const sin = Math.sin(radian);
 
   target[0] = cos * m00 - sin * m20;
   target[1] = cos * m01 - sin * m21;
@@ -199,7 +199,7 @@ function multiply(next: Matrix, prev: Matrix, target: Matrix) {
   return target;
 }
 
-export function rotateX(m: Matrix, angle: number, target?: Matrix) {
+export function rotateX(m: Matrix, radian: number, target?: Matrix) {
   target = target || new Float32Array(16);
 
   const m10 = m[4];
@@ -210,8 +210,8 @@ export function rotateX(m: Matrix, angle: number, target?: Matrix) {
   const m21 = m[9];
   const m22 = m[10];
   const m23 = m[11];
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
+  const cos = Math.cos(radian);
+  const sin = Math.sin(radian);
 
   target[4] = cos * m10 + sin * m20;
   target[5] = cos * m11 + sin * m21;

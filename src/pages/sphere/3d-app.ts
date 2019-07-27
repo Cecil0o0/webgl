@@ -1,19 +1,41 @@
 import CubeVertexShaderSource from 'shaders/basic/index.vert';
 import CubeFragmentShaderSource from 'shaders/basic/index.frag';
-import { setupCanvas } from 'engine';
+import { setupCanvas, deg2radian } from 'engine';
 import { genProgramWithShaderSource, clear } from 'engine/webgl-helper';
 import { raf } from 'engine/animation';
+import { createSphere } from 'engine/geometry';
+import { Matrix, GeometryElementData } from 'types';
+import { ortho, rotateX, rotateY } from 'engine/webl-matrix';
 
 let canvas: HTMLCanvasElement;
 let gl: WebGLRenderingContext;
 let aspect: number;
 let u_Matrix: WebGLUniformLocation;
+let matrix: Matrix;
+let sphere: GeometryElementData
+let vertiesDirectToDraw: Float32Array;
 
+let deg = 1;
 export let manager = raf(animate, 50);
 function animate() {
+  if (deg > 359) deg = 0;
+  clear(gl);
+
+  matrix = ortho(-aspect * 2, aspect * 2, -2, 2, 100, -100);
+  rotateX(matrix, deg2radian(deg += .4), matrix);
+  rotateY(matrix, deg2radian(deg += .4), matrix);
+  gl.uniformMatrix4fv(u_Matrix, false, matrix);
+
+  gl.drawElements(gl.TRIANGLES, sphere.indices.length, gl.UNSIGNED_BYTE, 0);
 }
 
 export function render() {
+  sphere = createSphere(100, 12, 12);
+
+  gl.bufferData(gl.ARRAY_BUFFER, sphere.vertices, gl.STATIC_DRAW);
+
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, sphere.indices, gl.STATIC_DRAW);
   manager.start()
 }
 
@@ -30,6 +52,7 @@ export function start() {
   })
 
   gl.useProgram(program);
+  gl.enable(gl.CULL_FACE);
 
   u_Matrix = gl.getUniformLocation(program, 'u_Matrix');
   const a_Position = gl.getAttribLocation(program, 'a_Position');
@@ -39,6 +62,7 @@ export function start() {
 
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
 
+  // 必须要bindBuffer才可以调用该方法
   gl.vertexAttribPointer(
     a_Position,
     3,

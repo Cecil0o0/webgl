@@ -1,7 +1,10 @@
 import { ColorArray } from "types";
+import { red, pink, blue, purple, cyan, yellow } from './colors';
+import { randomRange } from "engine";
 
 /**
  * 通过宽度、高度、深度创建立方体顶点数组以及元素索引数组
+ * 后续可通过gl.drawArrays 或 gl.drawwElements绘制
  * @param width
  * @param height
  * @param depth
@@ -34,12 +37,12 @@ export function createCube(width: number, height: number, depth: number) {
 
   // 六个面颜色
   const CUBE_COLORS: ColorArray[] = [
-    [1, 82 / 255, 167 / 255, 1], // 前
-    [91 / 255, 201 / 255, 1, 1], // 后
-    [1, 222 / 255, 68 / 255, 1], // 左
-    [95 / 255, 1, 227 / 255, 1], // 右
-    [167 / 255, 77 / 255, 1, 1], // 上
-    [1, 106 / 255, 88 / 255, 1]  // 下
+    red, // 前
+    purple, // 后
+    yellow, // 左
+    cyan, // 右
+    pink, // 上
+    blue  // 下
   ]
 
   let vertices: number[] = [];
@@ -67,5 +70,54 @@ export function createCube(width: number, height: number, depth: number) {
   return {
     indices: new Uint8Array(indices),
     vertices: new Float32Array(vertices)
+  }
+}
+
+/**
+ * 创建球体
+ */
+export function createSphere(radius: number, widthSegments: number, heightSegments: number) {
+  radius = radius < 1 ? 1 : radius > 100 ? 100 : radius;
+
+  const normalizeRadius = radius / 100;
+
+  const vertices: number[] = [];
+  const indices: number[] = [];
+  const colors: ColorArray[] = [red, pink, blue, purple, cyan, yellow];
+
+  // generate vertices
+  // 取边界
+  const yUnitRadian = Math.PI / heightSegments;
+  for(let i = 0; i <= heightSegments; i++) {
+    const y = normalizeRadius * Math.cos(yUnitRadian * i);
+    const perWidthRadian = 2 * Math.PI / widthSegments;
+    const perWidthRadius = normalizeRadius * Math.sin(yUnitRadian * i);
+    for(let j = 0; j <= widthSegments; j++) {
+      const x = perWidthRadius * Math.cos(perWidthRadian * j);
+      const z = perWidthRadius * Math.sin(perWidthRadian * j);
+      vertices.push(x, y, z, ...colors[randomRange(0, 5)]);
+    }
+  }
+
+  // generate indices
+  // 不取边界是因为三角形需要上下两层的顶点来画，而最后一层没有下一层所以不需要取边界
+  for(let i = 0; i <= heightSegments; i ++) {
+    for(let j = 0; j < widthSegments; j ++) {
+      indices.push(
+        i * widthSegments + j,
+        (i + 1) * widthSegments + j,
+        (i + 1) * widthSegments + j + 1
+      );
+      indices.push(
+        i * widthSegments + j,
+        (i + 1) * widthSegments + j + 1,
+        i * widthSegments + j + 1
+      )
+    }
+  }
+
+  return {
+    indices: Uint8Array.from(indices),
+    vertices: Float32Array.from(vertices)
   }
 }

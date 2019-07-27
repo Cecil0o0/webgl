@@ -13,5 +13,5 @@ module.exports = [
   },
   {name: 'texture', title: 'Render Texture', entry: 'src/pages/texture'},
   {name: 'cube', title: 'Render Cube', entry: 'src/pages/cube'},
-  {name: 'sphere', title: 'sphere', entry: 'src/pages/sphere'},
+  {name: 'sphere', title: 'Render Sphere', entry: 'src/pages/sphere'},
 ];

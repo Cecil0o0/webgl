@@ -1,19 +1,20 @@
 export * from './tiny';
 
+// 有限整数集的随机，包含边界
+export const randomRange = (min: number, max: number) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 export function randomColor(): { r: number, g: number, b: number, a: number} {
-  // 有限整数集的随机，包含边界
-  const randomFunc = (min: number, max: number) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
   return {
     // [0, 255]
-    r: randomFunc(0, 255),
-    g: randomFunc(0, 255),
-    b: randomFunc(0, 255),
+    r: randomRange(0, 255),
+    g: randomRange(0, 255),
+    b: randomRange(0, 255),
     // [0.5, 1)
-    a: randomFunc(7, 9) / 10,
+    a: randomRange(7, 9) / 10,
   };
 }
 

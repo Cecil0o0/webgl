@@ -1,4 +1,4 @@
-import { VertexAttribPointerConfig } from "types";
+import { VertexAttribPointerConfig, GeometryElementData } from "types";
 
 export function genShader(gl: WebGLRenderingContext, shaderType: number, shaderSourceCode: string) {
   // Create a shader
@@ -82,4 +82,16 @@ export function createBuffer(gl: WebGLRenderingContext, attribute: number, verte
     offset || 0
   )
   return buffer;
+}
+
+/**
+ * 把索引数组转换成直接用来绘制的顶点数组
+ * @param data
+ * @param countPerElement
+ */
+export function transformUnIndices(data: GeometryElementData, countPerElement: number = 7): Float32Array {
+  return Float32Array.from(data.indices.reduce((acc: number[], value) => {
+    acc.push(...data.vertices.slice(value * countPerElement, (value + 1) * countPerElement));
+    return acc;
+  }, []));
 }

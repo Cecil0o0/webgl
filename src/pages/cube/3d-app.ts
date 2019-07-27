@@ -24,8 +24,8 @@ function animate() {
   if (deg > 359) deg = 0;
   clear(gl);
   matrix = ortho(-aspect * 3, aspect * 3, -3, 3, 100, -100);
-  matrix = rotateY(matrix, deg2radian(deg++))
-  matrix = rotateX(matrix, deg2radian(deg++))
+  matrix = rotateY(matrix, deg2radian(deg += .4))
+  matrix = rotateX(matrix, deg2radian(deg += .4))
   gl.uniformMatrix4fv(u_Matrix, false, matrix);
   gl.drawElements(gl.TRIANGLES, cube.indices.length, gl.UNSIGNED_BYTE, 0);
 }
