@@ -6,6 +6,7 @@ import { raf } from 'engine/animation';
 import { createSphere } from 'engine/geometry';
 import { Matrix, GeometryElementData } from 'types';
 import { ortho, rotateX, rotateY } from 'engine/webl-matrix';
+import Stats from 'stats.js';
 
 let canvas: HTMLCanvasElement;
 let gl: WebGLRenderingContext;
@@ -13,11 +14,14 @@ let aspect: number;
 let u_Matrix: WebGLUniformLocation;
 let matrix: Matrix;
 let sphere: GeometryElementData
-let vertiesDirectToDraw: Float32Array;
+const stats = new Stats();
+stats.showPanel(1);
+document.body.appendChild(stats.dom);
 
 let deg = 1;
-export let manager = raf(animate, 50);
+export let manager = raf(animate, 60);
 function animate() {
+  stats.begin();
   if (deg > 359) deg = 0;
   clear(gl);
 
@@ -27,6 +31,7 @@ function animate() {
   gl.uniformMatrix4fv(u_Matrix, false, matrix);
 
   gl.drawElements(gl.TRIANGLES, sphere.indices.length, gl.UNSIGNED_BYTE, 0);
+  stats.end();
 }
 
 export function render() {

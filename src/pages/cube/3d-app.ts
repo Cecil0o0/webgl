@@ -19,7 +19,7 @@ let cube: {
 } = {};
 
 let deg = 3;
-export let manager = raf(animate, 50);
+export let manager = raf(animate, 60);
 function animate() {
   if (deg > 359) deg = 0;
   clear(gl);
