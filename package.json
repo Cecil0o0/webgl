@@ -3,8 +3,6 @@
   "version": "1.0.0",
   "description": "webgl",
   "main": "dist-rollup/rollup-bundle.cjs.js",
-  "module": "dist-rollup/rollup-bundle.esm.js",
-  "browser": "dist-rollup/rollup-bundle.umd.js",
   "scripts": {
     "start": "npm run dev",
     "dev": "webpack-dev-server",
@@ -35,12 +33,14 @@
     "postcss-loader": "^3.0.0",
     "raw-loader": "^2.0.0",
     "style-loader": "^0.23.1",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
     "url-loader": "^1.1.2",
     "vue-loader": "^15.7.0",
     "vue-template-compiler": "^2.6.10",
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^3.2.0"
+    "webpack-dev-server": "^3.2.0",
+    "yargs": "^13.3.0"
   },
   "dependencies": {
     "mathjs": "^6.0.3",

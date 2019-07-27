@@ -1,4 +1,4 @@
-export type Matrix = Float32Array;
+import { Matrix } from 'types';
 /**
  * 透视投影变换矩阵
  */

@@ -1,8 +1,8 @@
 import rectangleVertexShaderSource from './rectangle.vert';
 import rectangleFragmentShaderSource from './rectangle.frag';
-import { genProgramWithShaderSource, clear } from 'utils/webgl-helper';
-import { transformStartXY, setupCanvas } from 'utils';
-import { raf } from 'utils/animation';
+import { genProgramWithShaderSource, clear } from 'engine/webgl-helper';
+import { transformStartXY, setupCanvas } from 'engine';
+import { raf } from 'engine/animation';
 
 let gl: WebGLRenderingContext;
 let canvas: HTMLCanvasElement;

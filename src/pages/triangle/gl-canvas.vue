@@ -6,9 +6,9 @@
 </template>
 
 <script>
-import { start, gl, render } from './engine';
+import { start, gl, render } from './2d-app';
 import { WEBGL_TRIANGLE_TYPES } from './const';
-import { randomColor } from 'utils';
+import { randomColor } from 'engine';
 const positions = [];
 let innerPush = positions.push;
 export default {

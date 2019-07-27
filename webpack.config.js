@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 let { apps } = require('./config');
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -31,11 +32,10 @@ module.exports = {
     alias: {
       config: path.resolve('config'),
       '@': path.resolve('src'),
-      'webgl-helper': path.resolve('src/utils/webgl-helper'),
-      utils: path.resolve('src/utils'),
       vue$: 'vue/dist/vue.runtime.esm'
     },
-    extensions: ['.ts', '.js', '.json', '.vue']
+    extensions: ['.ts', '.js', '.json', '.vue'],
+    plugins: [new TsconfigPathsPlugin()]
   },
   devServer: {
     contentBase: ['static'],

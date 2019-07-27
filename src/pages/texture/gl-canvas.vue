@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { start, render} from './engine';
+import { start, render} from './2d-app';
 export default {
   mounted() {
     start();

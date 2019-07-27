@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { start, renderLine, pushVertices, positions } from './engine';
+import { start, renderLine, pushVertices, positions } from './2d-app';
 import { WEBGL_LINE_TYPES_ENUM } from './const';
 let tapTime = 0;
 let temp = [];

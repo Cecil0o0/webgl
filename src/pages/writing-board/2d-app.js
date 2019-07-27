@@ -1,7 +1,7 @@
 import squareVertexShaderSource from './point.vert';
 import redFragmentShaderSource from './point.frag';
-import {genShader, genProgram, clear} from 'webgl-helper';
-import {randomColor, getPlainArr, getDPR, setupCanvas} from 'utils';
+import {genShader, genProgram, clear} from 'engine/webgl-helper';
+import {randomColor, getPlainArr, getDPR, setupCanvas} from 'engine';
 
 let canvas; let gl; let a_Position; let a_Screen_Size; let u_Color;
 

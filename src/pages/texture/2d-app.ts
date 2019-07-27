@@ -1,7 +1,7 @@
 import TextureFragmentShaderSource from './texture.frag';
 import TextureVertexShaderSource from './texture.vert';
-import { setupCanvas } from 'utils';
-import { genProgramWithShaderSource, clear } from 'utils/webgl-helper';
+import { setupCanvas } from 'engine';
+import { genProgramWithShaderSource, clear } from 'engine/webgl-helper';
 import AwesomeImage from '@/images/awesome.jpg';
 
 let gl: WebGLRenderingContext;

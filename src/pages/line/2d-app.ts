@@ -1,5 +1,5 @@
-import {genShader, genProgram, clear} from 'utils/webgl-helper';
-import {setupCanvas, randomColor, getDPR} from 'utils';
+import {genShader, genProgram, clear} from 'engine/webgl-helper';
+import {setupCanvas, randomColor, getDPR} from 'engine';
 import LineFragmentShaderSource from './line.frag';
 import LineVertexShaderSource from './line.vert';
 import {WEBGL_LINE_TYPES_ENUM} from './const';

@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { redoHandler, undoHandler } from './engine';
+import { redoHandler, undoHandler } from './2d-app';
 
 export default {
   methods: {

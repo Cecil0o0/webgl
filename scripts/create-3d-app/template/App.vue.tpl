@@ -1,10 +1,17 @@
 <template>
-  <canvas @click="clickHandler"></canvas>
+  <Layout>
+    <canvas @click="clickHandler"></canvas>
+  </Layout>
 </template>
 
 <script>
-import { start, render, manager } from './engine';
+import Layout from '@/components/layout';
+import { start, render, manager } from './3d-app';
+
 export default {
+  components: {
+    Layout
+  },
   mounted() {
     start()
     render()

@@ -1,7 +1,7 @@
-import {genShader, genProgram, clear} from 'utils/webgl-helper';
+import {genShader, genProgram, clear} from 'engine/webgl-helper';
 import triangleVertexShaderSource from './triangle.vert';
 import triangleFragmentShaderSource from './triangle.frag';
-import {setupCanvas} from 'utils';
+import {setupCanvas} from 'engine';
 import {WEBGL_TRIANGLE_TYPES} from './const';
 
 export let canvas: HTMLCanvasElement;

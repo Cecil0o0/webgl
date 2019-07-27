@@ -5,3 +5,7 @@ export type VertexAttribPointerConfig = {
   stride?: number,
   offset?: number
 }
+
+export type ColorArray = [number, number, number, number]
+
+export type Matrix = Float32Array;

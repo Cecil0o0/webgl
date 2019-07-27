@@ -9,10 +9,10 @@
 <script>
 import Controls from './controls';
 import Menu from '@/components/menu';
-import { isMobile } from 'utils';
-import { addDoubleTapEventListener, addTapEventListener } from 'utils/tap';
-import { addDbclickEventListner } from 'utils/click';
-import { start, clearHandler, downHandler, moveHandler, upHandler } from './engine';
+import { isMobile } from 'engine';
+import { addDoubleTapEventListener, addTapEventListener } from 'engine/tap';
+import { addDbclickEventListner } from 'engine/click';
+import { start, clearHandler, downHandler, moveHandler, upHandler } from './2d-app';
 
 const disposers = [];
 
