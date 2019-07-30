@@ -14,7 +14,6 @@ let aspect: number;
 let u_Matrix: WebGLUniformLocation;
 let matrix: Matrix;
 let sphere: GeometryElementData;
-let trianglesPointsArray: Float32Array;
 const stats = new Stats();
 stats.showPanel(0);
 document.body.appendChild(stats.dom);
@@ -31,21 +30,18 @@ function animate() {
   rotateY(matrix, deg2radian(deg += .3), matrix);
   gl.uniformMatrix4fv(u_Matrix, false, matrix);
 
-  gl.drawArrays(gl.TRIANGLES, 0, trianglesPointsArray.length / 7);
-  // gl.drawElements(gl.TRIANGLES, sphere.indices.length, gl.UNSIGNED_BYTE, 0);
-  // gl.drawArrays(gl.POINTS, 0, sphere.vertices.length / 7);
+  gl.drawElements(gl.TRIANGLES, sphere.indices.length, gl.UNSIGNED_BYTE, 0);
+  gl.drawArrays(gl.POINTS, 0, sphere.vertices.length / 7);
   stats.end();
 }
 
 export function render() {
   sphere = createSphere(100, 12, 12);
 
-  trianglesPointsArray = transformUnIndices(sphere)
+  gl.bufferData(gl.ARRAY_BUFFER, sphere.vertices, gl.DYNAMIC_DRAW);
 
-  gl.bufferData(gl.ARRAY_BUFFER, trianglesPointsArray, gl.DYNAMIC_DRAW);
-
-  // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
-  // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, sphere.indices, gl.DYNAMIC_DRAW);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, sphere.indices, gl.DYNAMIC_DRAW);
   manager.start()
 }
 
