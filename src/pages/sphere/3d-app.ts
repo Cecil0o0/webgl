@@ -1,7 +1,7 @@
 import CubeVertexShaderSource from 'shaders/basic/index.vert';
 import CubeFragmentShaderSource from 'shaders/basic/index.frag';
 import { setupCanvas, deg2radian } from 'engine';
-import { genProgramWithShaderSource, clear } from 'engine/webgl-helper';
+import { genProgramWithShaderSource, clear, transformUnIndices } from 'engine/webgl-helper';
 import { raf } from 'engine/animation';
 import { createSphere } from 'engine/geometry';
 import { Matrix, GeometryElementData } from 'types';
@@ -13,9 +13,10 @@ let gl: WebGLRenderingContext;
 let aspect: number;
 let u_Matrix: WebGLUniformLocation;
 let matrix: Matrix;
-let sphere: GeometryElementData
+let sphere: GeometryElementData;
+let trianglesPointsArray: Float32Array;
 const stats = new Stats();
-stats.showPanel(1);
+stats.showPanel(0);
 document.body.appendChild(stats.dom);
 
 let deg = 1;
@@ -26,21 +27,25 @@ function animate() {
   clear(gl);
 
   matrix = ortho(-aspect * 2.5, aspect * 2.5, -2.5, 2.5, 100, -100);
-  rotateX(matrix, deg2radian(deg += .4), matrix);
-  rotateY(matrix, deg2radian(deg += .4), matrix);
+  rotateX(matrix, deg2radian(deg += .3), matrix);
+  rotateY(matrix, deg2radian(deg += .3), matrix);
   gl.uniformMatrix4fv(u_Matrix, false, matrix);
 
-  gl.drawElements(gl.TRIANGLES, sphere.indices.length, gl.UNSIGNED_BYTE, 0);
+  gl.drawArrays(gl.TRIANGLES, 0, trianglesPointsArray.length / 7);
+  // gl.drawElements(gl.TRIANGLES, sphere.indices.length, gl.UNSIGNED_BYTE, 0);
+  // gl.drawArrays(gl.POINTS, 0, sphere.vertices.length / 7);
   stats.end();
 }
 
 export function render() {
   sphere = createSphere(100, 12, 12);
 
-  gl.bufferData(gl.ARRAY_BUFFER, sphere.vertices, gl.STATIC_DRAW);
+  trianglesPointsArray = transformUnIndices(sphere)
 
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, sphere.indices, gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, trianglesPointsArray, gl.DYNAMIC_DRAW);
+
+  // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
+  // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, sphere.indices, gl.DYNAMIC_DRAW);
   manager.start()
 }
 
