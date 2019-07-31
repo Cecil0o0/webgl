@@ -1,6 +1,8 @@
-import { ColorArray } from "types";
+import { ColorArray, GeometryElementData } from "types";
 import { red, pink, blue, purple, cyan, yellow } from './colors';
-import { randomRange } from "engine";
+import { randomRange, numberLimitRange } from "engine";
+
+const colors: ColorArray[] = [red, pink, blue, purple, cyan, yellow];
 
 /**
  * 通过宽度、高度、深度创建立方体顶点数组以及元素索引数组
@@ -79,14 +81,13 @@ export function createCube(width: number, height: number, depth: number) {
  * 即顶点总数为 (heightSegments - 1) * widthSegments + 2
  * 缺点是算法稍微复杂一些以及不能只能使用渐变色
  */
-export function createSphere(radius: number, widthSegments: number, heightSegments: number) {
+export function createSphere(radius: number, widthSegments: number, heightSegments: number): GeometryElementData {
   radius = radius < 1 ? 1 : radius > 100 ? 100 : radius;
 
   const normalizeRadius = radius / 100;
 
   const vertices: number[] = [];
   const indices: number[] = [];
-  const colors: ColorArray[] = [red, pink, blue, purple, cyan, yellow];
   const getColor = () => colors[randomRange(0, 5)]
 
   // generate vertices
@@ -130,10 +131,10 @@ export function createSphere(radius: number, widthSegments: number, heightSegmen
   // indices.push(3,8,4)
   // indices.push(4,8,5)
   // indices.push(4,5,1)
-  // 一般来说是CCW即逆时针绘制正面，因为webgl为提高性能默认启用背面剔除
-  for(let i = 1; i < heightSegments - 1; i ++) {
+  // 一般来说是CCW即逆时针绘制正面，因为webgl为提高性能默认（似乎没有，但就要手动启用啦）启用背面剔除
+  for (let i = 1; i < heightSegments - 1; i++) {
     let start = (i - 1) * widthSegments;
-    for(let j = 1; j <= widthSegments; j ++) {
+    for (let j = 1; j <= widthSegments; j++) {
       // 纬度上每一层会共用一个点做起始点（减少顶点数以降低显存），副作用是逻辑会较为复杂
       // 此等式表示纬度平面中最后一个顶点作为绘制三角形的起点
       if (j === widthSegments) {
@@ -163,13 +164,68 @@ export function createSphere(radius: number, widthSegments: number, heightSegmen
   }
   const total = (heightSegments - 1) * widthSegments + 2;
   const last = total - 1;
-  for(let i = 1; i <= widthSegments; i ++) {
+  for (let i = 1; i <= widthSegments; i++) {
     // 原理同上
     if (i === widthSegments) {
       indices.push(last, last - i, last - 1);
     } else {
       indices.push(last, last - i, last - 1 - i)
     }
+  }
+
+  return {
+    indices: Uint8Array.from(indices),
+    vertices: Float32Array.from(vertices)
+  }
+}
+
+/**
+ * 创建圆锥体，使用三角图元装配，支持三角图元单个配色
+ */
+
+export function createCone(topRadius: number, bottomRadius: number, widthSegments: number, heightSegments: number, height: number): GeometryElementData {
+  const indices: number[] = [], vertices: number[] = [];
+  // 归一化半径和高度
+  const topNormalizeRadius = numberLimitRange(topRadius, 1, 100) / 100;
+  const bottomNormalizeRadius = numberLimitRange(bottomRadius, 1, 100) / 100;
+  const normalizeHeight = numberLimitRange(height, 1, 100) / 100;
+  const getColor = () => colors[randomRange(0, 5)]
+
+  // 经度平面平均份数
+  const xzAxisPerRadian = 2 * Math.PI / widthSegments;
+  const xzAxisPerRadius = (bottomNormalizeRadius - topNormalizeRadius) / widthSegments;
+  const yUnitHeight = normalizeHeight / heightSegments;
+  vertices.push(0, 0, 0, ...getColor());
+  for (let i = 0; i <= heightSegments; i++) {
+    const y = yUnitHeight * i;
+    const xzRadius = xzAxisPerRadius * i;
+    const color = getColor();
+    for (let j = widthSegments; j >= 0; j--) {
+      const x = xzRadius * Math.cos(xzAxisPerRadian * j);
+      const z = xzRadius * Math.sin(xzAxisPerRadian * j);
+      vertices.push(x, y, z, ...getColor());
+    }
+  }
+  vertices.push(0, normalizeHeight, 0, ...getColor());
+
+  for (let i = 0; i <= heightSegments; i++) {
+    for (let j = 0; j <= widthSegments; j++) {
+      indices.push(
+        i * widthSegments + j,
+        (i + 1) * widthSegments + j,
+        (i + 1) * widthSegments + j + 1
+      );
+      indices.push(
+        i * widthSegments + j,
+        (i + 1) * widthSegments + j + 1,
+        i * widthSegments + j + 1
+      )
+    }
+  }
+  // 绘制底面
+  const last = vertices.length / 7 - 1
+  for (let i = widthSegments + 1; i > 0; i--) {
+    indices.push(last, last - i + 1, last - i);
   }
 
   return {

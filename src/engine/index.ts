@@ -64,3 +64,7 @@ export function deg2radian(deg: number) {
 export function radian2deg(radian: number) {
   return 180 * radian / Math.PI;
 }
+
+export function numberLimitRange(num: number, min: number, max: number): number {
+  return num < min ? min : num > max ? max : num;
+}

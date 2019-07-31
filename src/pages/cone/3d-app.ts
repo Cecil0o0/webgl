@@ -3,45 +3,47 @@ import CubeFragmentShaderSource from 'shaders/basic/index.frag';
 import { setupCanvas, deg2radian } from 'engine';
 import { genProgramWithShaderSource, clear, transformUnIndices } from 'engine/webgl-helper';
 import { raf } from 'engine/animation';
-import { createSphere } from 'engine/geometry';
-import { Matrix, GeometryElementData } from 'types';
+import { createCone } from 'engine/geometry';
+import { GeometryElementData, Matrix } from 'types';
 import { ortho, rotateX, rotateY } from 'engine/webl-matrix';
-import Stats from 'stats.js';
 
 let canvas: HTMLCanvasElement;
 let gl: WebGLRenderingContext;
 let aspect: number;
+let m: Matrix;
 let u_Matrix: WebGLUniformLocation;
-let matrix: Matrix;
-let sphere: GeometryElementData;
-const stats = new Stats();
-stats.showPanel(0);
-document.body.appendChild(stats.dom);
+let cone: GeometryElementData;
+let verticesForDrawArray: Float32Array;
 
-let deg = 1;
-export let manager = raf(animate, 60);
+export let manager = raf(animate, 50);
+let deg = 0;
 function animate() {
-  stats.begin();
   if (deg > 359) deg = 0;
   clear(gl);
 
-  matrix = ortho(-aspect * 2.5, aspect * 2.5, -2.5, 2.5, 100, -100);
-  rotateX(matrix, deg2radian(deg += .3), matrix);
-  rotateY(matrix, deg2radian(deg += .3), matrix);
-  gl.uniformMatrix4fv(u_Matrix, false, matrix);
+  m = ortho(-aspect * 1.5, aspect * 1.5, -1.5, 1.5, 100, -100);
+  rotateX(m, deg2radian(deg += .3), m);
+  rotateY(m, deg2radian(deg += .3), m);
 
-  gl.drawElements(gl.TRIANGLES, sphere.indices.length, gl.UNSIGNED_BYTE, 0);
-  gl.drawArrays(gl.POINTS, 0, sphere.vertices.length / 7);
-  stats.end();
+  gl.uniformMatrix4fv(u_Matrix, false, m);
+
+  gl.drawArrays(gl.POINTS, 0, cone.vertices.length / 7);
+  // gl.drawArrays(gl.TRIANGLES, 0 , verticesForDrawArray.length / 7 / 3);
+  gl.drawElements(gl.TRIANGLES, cone.indices.length, gl.UNSIGNED_BYTE, 0);
 }
 
 export function render() {
-  sphere = createSphere(160, 12, 12);
 
-  gl.bufferData(gl.ARRAY_BUFFER, sphere.vertices, gl.DYNAMIC_DRAW);
+  cone = createCone(0, 60, 8, 8, 100);
 
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, sphere.indices, gl.DYNAMIC_DRAW);
+  // verticesForDrawArray = transformUnIndices(cone);
+  console.log(cone);
+
+  gl.bufferData(gl.ARRAY_BUFFER, cone.vertices, gl.DYNAMIC_DRAW);
+
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer())
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, cone.indices, gl.DYNAMIC_DRAW);
+
   manager.start()
 }
 
@@ -58,7 +60,8 @@ export function start() {
   })
 
   gl.useProgram(program);
-  gl.enable(gl.CULL_FACE);
+  gl.enable(gl.CULL_FACE)
+  gl.cullFace(gl.BACK)
 
   u_Matrix = gl.getUniformLocation(program, 'u_Matrix');
   const a_Position = gl.getAttribLocation(program, 'a_Position');
@@ -68,7 +71,6 @@ export function start() {
 
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
 
-  // 必须要bindBuffer才可以调用该方法
   gl.vertexAttribPointer(
     a_Position,
     3,
