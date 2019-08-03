@@ -1,4 +1,4 @@
-import { VertexAttribPointerConfig, GeometryElementData } from "types";
+import { GeometryElementData } from "types";
 
 export function genShader(gl: WebGLRenderingContext, shaderType: number, shaderSourceCode: string) {
   // Create a shader
@@ -40,6 +40,9 @@ export function genProgram(
   throw errorlog;
 }
 
+/**
+ * high-level function
+ */
 export function genProgramWithShaderSource({
   gl,
   vertexShaderSource,
@@ -56,32 +59,20 @@ export function genProgramWithShaderSource({
   );
 }
 
-// 清空画布
-export function clear(gl: WebGLRenderingContext) {
+/**
+ * 清空画布
+ * @param color [r, g, b, a]需要归一化
+ */
+export function clear(gl: WebGLRenderingContext, color: number[] = [0.0, 0.0, 0.0, 1.0]) {
   // Set clearColor
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.clearColor(color[0], color[1], color[2], color[3]);
 
   // Clear the color buffer with specified clear color
   gl.clear(gl.COLOR_BUFFER_BIT);
 }
 
-export function getContext(canvas: HTMLCanvasElement) {
+export function getGlContext(canvas: HTMLCanvasElement) {
   return canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-}
-
-export function createBuffer(gl: WebGLRenderingContext, attribute: number, vertexAttribPointer: VertexAttribPointerConfig): WebGLBuffer {
-  let {size, type, normalized, stride, offset} = vertexAttribPointer;
-  const buffer = gl.createBuffer();
-  gl.enableVertexAttribArray(attribute);
-  gl.vertexAttribPointer(
-    attribute,
-    size,
-    type || gl.FLOAT,
-    normalized || false,
-    stride || 0,
-    offset || 0
-  )
-  return buffer;
 }
 
 /**

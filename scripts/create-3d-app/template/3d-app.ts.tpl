@@ -9,7 +9,7 @@ let gl: WebGLRenderingContext;
 let aspect: number;
 let u_Matrix: WebGLUniformLocation;
 
-export let manager = raf(animate, 50);
+export let manager = raf(animate, 60);
 function animate() {
 }
 

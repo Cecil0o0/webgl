@@ -5,7 +5,7 @@ import { genProgramWithShaderSource, clear, transformUnIndices } from 'engine/we
 import { raf } from 'engine/animation';
 import { createCone } from 'engine/geometry';
 import { GeometryElementData, Matrix } from 'types';
-import { ortho, rotateX, rotateY } from 'engine/webl-matrix';
+import { ortho, rotateX, rotateY } from 'engine/webgl-matrix';
 
 let canvas: HTMLCanvasElement;
 let gl: WebGLRenderingContext;

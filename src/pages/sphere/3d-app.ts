@@ -5,7 +5,7 @@ import { genProgramWithShaderSource, clear, transformUnIndices } from 'engine/we
 import { raf } from 'engine/animation';
 import { createSphere } from 'engine/geometry';
 import { Matrix, GeometryElementData } from 'types';
-import { ortho, rotateX, rotateY } from 'engine/webl-matrix';
+import { ortho, rotateX, rotateY } from 'engine/webgl-matrix';
 import Stats from 'stats.js';
 
 let canvas: HTMLCanvasElement;

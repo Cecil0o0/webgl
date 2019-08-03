@@ -2,7 +2,7 @@ import CubeVertexShaderSource from 'shaders/basic/index.vert';
 import CubeFragmentShaderSource from 'shaders/basic/index.frag';
 import { setupCanvas, deg2radian } from 'engine';
 import { genProgramWithShaderSource, clear } from 'engine/webgl-helper';
-import { ortho, rotateY, rotateX } from 'engine/webl-matrix';
+import { ortho, rotateY, rotateX } from 'engine/webgl-matrix';
 import { raf } from 'engine/animation';
 import { Matrix } from 'types';
 import { createCube } from 'engine/geometry';

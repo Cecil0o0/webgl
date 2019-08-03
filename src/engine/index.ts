@@ -1,70 +1,30 @@
-export * from './tiny';
+import * as geometry from './geometry';
+import * as matrix from './webgl-matrix';
+import * as webglHelper from './webgl-helper';
+import PerspectiveCamera from './core/perspective-camera';
+import OrthoCamera from './core/ortho-camera';
+import Model from './core/model';
+import Scene from './core/scene';
+import Renderer from './core/renderer';
+import {Vector2, Vector3} from './core/vector';
+import Object3D from './core/object3d';
 
-// 有限整数集的随机，包含边界
-export const randomRange = (min: number, max: number) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+export {
+  geometry,
+  matrix,
+  webglHelper,
+  PerspectiveCamera,
+  OrthoCamera,
+  Model,
+  Scene,
+  Renderer,
+  Vector3,
+  Vector2,
+  Object3D,
 };
 
-export function randomColor(): { r: number, g: number, b: number, a: number} {
-  return {
-    // [0, 255]
-    r: randomRange(0, 255),
-    g: randomRange(0, 255),
-    b: randomRange(0, 255),
-    // [0.5, 1)
-    a: randomRange(7, 9) / 10,
-  };
-}
-
-export function isMobile(): string[] | [] {
-  return navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i);
-}
-
-export function getPlainArr(arr: []) {
-  return arr.reduce((acc, innerArray) => {
-    acc = acc.concat(innerArray);
-    return acc;
-  }, []);
-}
-
-export function getDPR(): number {
-  return window.devicePixelRatio || 1;
-}
-
-// canvas适配多倍屏
-export function setupCanvas(canvas: HTMLCanvasElement): { width: number, height: number } {
-  const DPR = getDPR();
-  const {width, height} = canvas.getBoundingClientRect();
-  canvas.width = width * DPR;
-  canvas.height = height * DPR;
-  canvas.style.width = `${width}px`;
-  canvas.style.height = `${height}px`;
-  return {
-    width,
-    height,
-  };
-}
-
-export function transformStartXY(x: number, y: number, vertices: number[]) {
-  const stride = 6;
-  for (let i = 0; i < vertices.length; i += stride) {
-    vertices[i] += x;
-  }
-  for (let i = 1; i < vertices.length; i += stride) {
-    vertices[i] += y;
-  }
-}
-
-export function deg2radian(deg: number) {
-  return Math.PI / 180 * deg;
-}
-
-export function radian2deg(radian: number) {
-  return 180 * radian / Math.PI;
-}
-
-export function numberLimitRange(num: number, min: number, max: number): number {
-  return num < min ? min : num > max ? max : num;
-}
+export * from './core/geometry';
+export * from './utils';
+export * from './math';
+export * from './other';
+export * from './deprecated';
