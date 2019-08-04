@@ -1,8 +1,8 @@
-import Object3D from './object3d';
+import Model from './model';
 
 export default class Scene {
-  objList: Object3D[] = [];
-  add(object: Object3D): number {
+  objList: Model[] = [];
+  add(object: Model): number {
     this.objList.push(object);
     return this.objList.length;
   }

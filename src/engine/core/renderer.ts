@@ -7,7 +7,8 @@ import {
   genProgramWithShaderSource,
   clear,
 } from 'engine/webgl-helper';
-import {matrix, Model, Object3D} from 'engine';
+import {matrix, Model} from 'engine';
+import { Matrix } from 'types';
 
 export default class Renderer {
   domElement: HTMLCanvasElement;
@@ -26,52 +27,46 @@ export default class Renderer {
     this.initGl();
   }
   initGl() {
-    const { gl } = this;
+    const {gl} = this;
     gl.enable(gl.CULL_FACE);
   }
-  render(scene: Scene, camera?: OrthoCamera | PerspectiveCamera) {
+  render(scene: Scene, camera?: OrthoCamera) {
     const gl = this.gl;
     clear(gl);
-    scene.objList.forEach(object => {
-      if (!object.program) generateProgram(gl, object);
-      gl.useProgram(object.program);
-      uploadAttribsData(gl, object);
-      uploadUniformsData(gl, object);
+    scene.objList.forEach(model => {
+      if (!model.program) generateProgram(gl, model);
+      gl.useProgram(model.program);
+      uploadAttribsData(gl, model);
+      uploadUniformsData(gl, model, camera.matrix);
 
-      if (object.renderType === 'drawElements') {
+      if (model.renderType === 'drawElements') {
         gl.drawElements(
-            (gl as any)[object.primitive],
-            object.model.bufferInfo.indices.length,
+            (gl as any)[model.primitive],
+            model.bufferInfo.indices.length,
             gl.UNSIGNED_BYTE,
             0
         );
       }
-
-      console.log(object);
     });
   }
 }
 
-function generateProgram(gl: WebGLRenderingContext, object: Object3D) {
-  object.program = genProgramWithShaderSource({
+function generateProgram(gl: WebGLRenderingContext, model: Model) {
+  model.program = genProgramWithShaderSource({
     gl,
-    fragmentShaderSource: object.model.shaderSource.fragment,
-    vertexShaderSource: object.model.shaderSource.vertex,
+    fragmentShaderSource: model.shaderSource.fragment,
+    vertexShaderSource: model.shaderSource.vertex,
   });
 }
 
-function uploadAttribsData(
-    gl: WebGLRenderingContext,
-    {program, model}: { program: WebGLProgram; model: Model }
-) {
+function uploadAttribsData(gl: WebGLRenderingContext, model: Model) {
   // 为保证每次都渲染最新数据，所以每一帧都需要更新缓存区，需要做一下benchmark。
   // 上传200左右的点耗时60微秒，可能存在瓶颈，而且不稳定，有时候会飙到3毫秒之多
+  const {program} = model;
   const attribCount = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
-  console.log('上传并绑定所有激活的attribute变量的数据，比如位置、颜色');
   for (let i = 0; i < attribCount; i++) {
     console.time('upload GPU Data' + i);
     const attribInfo = gl.getActiveAttrib(program, i);
-    console.log("TCL: attribInfo", attribInfo)
     const attribName = attribInfo.name;
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
     const attribLocation = gl.getAttribLocation(program, attribName);
@@ -98,20 +93,16 @@ function uploadAttribsData(
   );
 }
 
-function uploadUniformsData(
-    gl: WebGLRenderingContext,
-    {program, model}: { program: WebGLProgram; model: Model }
-) {
-  console.log('上传uniform变量的数据，比如投影变换矩阵和视图矩阵');
+function uploadUniformsData(gl: WebGLRenderingContext, model: Model, projectMatrix: Matrix) {
   // 计算平移、旋转、缩放、视图矩阵、投影矩阵
   // 需要1ms，很可能是性能瓶颈
-  console.time('pre-render开销')
-  model.preRender(matrix.identity(), model.uniforms.u_Matrix);
-  console.timeEnd('pre-render开销')
+  console.time('pre-render开销');
+  model.preRender(matrix.identity(), projectMatrix);
+  console.timeEnd('pre-render开销');
   gl.uniformMatrix4fv(
-    gl.getUniformLocation(program, 'u_Matrix'),
+    gl.getUniformLocation(model.program, 'u_Matrix'),
     false,
-    model.finalMatrix
+    model.uniforms.u_MVPMatrix
   );
 }
 

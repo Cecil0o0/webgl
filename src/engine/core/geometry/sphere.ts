@@ -1,14 +1,16 @@
 import {PositionsArray, IndicesArray} from 'types';
+import Geometry from './basic';
 
 export type GeometryMeta = {
   positions: PositionsArray;
   indices: IndicesArray;
 };
 
-export class SphereGeometry {
+export class SphereGeometry extends Geometry {
   indices: IndicesArray
   positions: PositionsArray
   constructor(radius: number, widthSegments: number, heightSegments: number) {
+    super();
     radius = radius < 1 ? 1 : radius > 100 ? 100 : radius;
 
     const normalizeRadius = radius / 100;

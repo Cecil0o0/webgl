@@ -1,5 +1,5 @@
 <template>
-  <Layout />
+  <Layout class="layout" @click.native="clickHandler" />
 </template>
 
 <script>
@@ -11,12 +11,21 @@ export default {
     Layout
   },
   mounted() {
-    setup()
+    setup();
   },
   methods: {
     clickHandler() {
       manager.isRunning ? manager.pause() : manager.resume();
     }
   }
-}
+};
 </script>
+
+<style lang="less" scoped>
+.layout {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+}
+</style>

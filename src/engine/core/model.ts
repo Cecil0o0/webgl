@@ -1,8 +1,10 @@
 import * as matrix from 'engine/webgl-matrix';
 import {Matrix, PositionsArray, IndicesArray} from 'types';
 import {Vector3, deg2radian} from 'engine';
+import Object3D from './object3d';
 import SphereNoTextureVertexShaderSrc from './shader/no-texture/index.vert';
 import SphereNoTextureFragmentShaderSrc from './shader/no-texture/index.frag';
+import Geometry from './geometry/basic';
 
 // 模型顶点数据
 class ModelBufferInfo {
@@ -13,7 +15,7 @@ class ModelBufferInfo {
       normalize?: false;
       floatNumsPerElement?: 3;
       stride?: 0;
-      offset?: 0
+      offset?: 0;
     };
     a_Color?: {
       buffer: Float32Array;
@@ -21,9 +23,9 @@ class ModelBufferInfo {
       normalize?: false;
       floatNumsPerElement?: 4;
       stride?: 0;
-      offset?: 0
+      offset?: 0;
     };
-    [key: string]: any
+    [key: string]: any;
   };
   indices?: IndicesArray;
 }
@@ -31,7 +33,7 @@ class ModelBufferInfo {
 // 模型矩阵转换数据
 class Uniforms {
   // MVP（模型视图投影）矩阵
-  u_Matrix?: Matrix;
+  u_MVPMatrix?: Matrix;
   // 模型矩阵
   u_ModelMatrix?: Matrix;
   // 法向量矩阵
@@ -40,9 +42,7 @@ class Uniforms {
   u_LightColor?: any;
 }
 
-export default class Model {
-  // 最终传递给顶点着色器的矩阵
-  finalMatrix: Matrix = matrix.identity();
+export default class Model extends Object3D {
   // 偏移
   translation = new Vector3();
   // 旋转角度
@@ -53,7 +53,9 @@ export default class Model {
   // 位置、颜色、纹理等缓冲数据
   bufferInfo: ModelBufferInfo;
   // 矩阵数据
-  uniforms: Uniforms;
+  uniforms: Uniforms = {
+    u_MVPMatrix: matrix.identity()
+  };
   // shader源码
   shaderSource: {
     fragment: string;
@@ -64,17 +66,33 @@ export default class Model {
   };
 
   constructor(
-    bufferInfo: ModelBufferInfo,
-    uniforms?: Uniforms,
-    options?: {
+      geometry: Geometry,
+      colors: number[],
+      options?: {
       shaderSource: {
-        fragment: string;
-        vertex: string;
+      fragment: string;
+      vertex: string;
       };
-    }
+      },
+      Object3DOptions?: {
+      primitive?: string;
+      renderType?: string;
+      program?: WebGLProgram;
+      }
   ) {
-    this.uniforms = uniforms;
-    this.bufferInfo = bufferInfo;
+    super(Object3DOptions);
+    this.bufferInfo = {
+      attributes: {
+        a_Position: {
+          buffer: geometry.positions,
+          floatNumsPerElement: 3,
+        },
+        a_Color: {
+          buffer: Float32Array.from(colors),
+        },
+      },
+      indices: geometry.indices,
+    };
     if (options && options.shaderSource) {
       this.shaderSource = options.shaderSource;
     }
@@ -190,9 +208,18 @@ export default class Model {
           modelMatrix
       );
     }
+    this.uniforms.u_ModelMatrix = modelMatrix;
 
     // 重新计算矩阵
-    matrix.multiply(viewMatrix, modelMatrix, this.finalMatrix);
-    matrix.multiply(projectionMatrix, this.finalMatrix, this.finalMatrix);
+    matrix.multiply(
+        viewMatrix,
+        this.uniforms.u_ModelMatrix,
+        this.uniforms.u_MVPMatrix
+    );
+    matrix.multiply(
+        projectionMatrix,
+        this.uniforms.u_MVPMatrix,
+        this.uniforms.u_MVPMatrix
+    );
   }
 }

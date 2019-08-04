@@ -1,88 +1,74 @@
 import {raf} from 'engine/animation';
 import * as SNOWY from 'engine';
-import {ortho} from 'engine/webgl-matrix';
 import {randomColor} from 'engine';
 
 let camera: SNOWY.OrthoCamera;
 let scene: SNOWY.Scene;
 let renderer: SNOWY.Renderer;
-let sphereModel: SNOWY.Model;
+let sphere: SNOWY.Model;
+let spheres: SNOWY.Model[] = [];
 
 export const manager = raf(animate, 60);
 let rx = 1;
 let ry = 1;
 let tx = 0;
 let dir = 1;
-const ty = 0;
-const sx = 1;
-const sy = 1;
+let s = 1;
+let tdir = 1;
 function animate() {
-  sphereModel.rotateX((rx += 1));
-  sphereModel.rotateY((ry -= 1));
+  sphere.rotateX((rx += 1));
+  sphere.rotateY((ry -= 1));
   if (tx >= 1) dir = -1;
   if (tx <= -1) dir = +1;
-  sphereModel.translateX((tx += 0.01 * dir));
-  // sphereModel.translateY(ty -= 0.001);
-  // sphereModel.scaleX(sx -= 0.001);
-  // sphereModel.scaleY(sy += 0.001);
-  renderer.render(scene);
+  sphere.translateX((tx += 0.01 * dir));
+  // sphere.translateY(ty -= 0.001);
+  if (s >= 1) {
+    tdir = -1
+  } else if (s <= .5) {
+    tdir = +1
+  }
+  s += 0.005 * tdir
+  sphere.scaleX(s);
+  sphere.scaleY(s);
+  sphere.scaleZ(s);
+
+  spheres.forEach(s => {
+    s.rotateX(rx);
+    s.rotateY(ry);
+  })
+  renderer.render(scene, camera);
 }
 
 export function setup() {
   renderer = new SNOWY.Renderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
+
   scene = new SNOWY.Scene();
-  const SphereGeometry = new SNOWY.SphereGeometry(80, 8, 8);
+
   const aspect = window.innerWidth / window.innerHeight;
-  const colors = [];
-  for (let i = 0; i < SphereGeometry.positions.length / 3; i++) {
+  camera = new SNOWY.OrthoCamera(-aspect * 2, aspect * 2, -2, 2, 100, -100);
+
+  const sphereGeometry = new SNOWY.SphereGeometry(80, 8, 8);
+  const colors: number[] = [];
+  for (let i = 0; i < sphereGeometry.indices.length; i++) {
     colors.push(...Object.values(randomColor()));
   }
-  sphereModel = new SNOWY.Model(
-      {
-        attributes: {
-          a_Position: {
-            buffer: SphereGeometry.positions,
-            floatNumsPerElement: 3,
-          },
-          a_Color: {
-            buffer: Float32Array.from(colors),
-          },
-        },
-        indices: SphereGeometry.indices,
-      },
-      {
-        u_Matrix: ortho(-aspect * 2, aspect * 2, -2, 2, 100, -100),
-      }
-  );
-  const sphere = new SNOWY.Object3D({
-    model: sphereModel,
-  });
+  sphere = new SNOWY.Model(sphereGeometry, colors);
+
+
+  for (let i = 0; i < 5; i++) {
+    let sphereGeometry = new SNOWY.SphereGeometry((i+1) * 10, (i+5), (i+5));
+    let color: number[] = [];
+    for(let j = 0; j < sphereGeometry.indices.length; j++) {
+      color.push(...Object.values(randomColor()));
+    }
+    let sphere = new SNOWY.Model(sphereGeometry, colors);
+    sphere.translate(-i / 4, i /4 , 0)
+    scene.add(sphere)
+    spheres.push(sphere);
+  }
   scene.add(sphere);
-  const sphereModel2 = new SNOWY.Model(
-      {
-        attributes: {
-          a_Position: {
-            buffer: SphereGeometry.positions,
-            floatNumsPerElement: 3,
-          },
-          a_Color: {
-            buffer: Float32Array.from(colors),
-          },
-        },
-        indices: SphereGeometry.indices,
-      },
-      {
-        u_Matrix: ortho(-aspect * 2, aspect * 2, -2, 2, 100, -100),
-      }
-  );
-  const sphere2 = new SNOWY.Object3D({
-    model: sphereModel2,
-  });
-  scene.add(sphere2);
-  sphereModel2.translate( -1, .5, 0 );
-  renderer.render(scene);
 
   manager.start();
 }
