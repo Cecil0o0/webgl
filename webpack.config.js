@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
@@ -94,7 +95,7 @@ module.exports = {
           template: 'templates/index.html',
           filename: `${value.name}.html`,
           inject: true,
-          chunks: [value.name],
+          chunks: [value.name, 'manifest', 'snowy_engine', 'libs'],
           title: value.title
         })
     ),
@@ -105,8 +106,10 @@ module.exports = {
         to: path.resolve('apps')
       }
     ]),
-    new CaseSensitivePathsPlugin()
+    new CaseSensitivePathsPlugin(),
+    new CleanWebpackPlugin()
   ],
+  target: 'web',
   optimization: {
     minimizer: [
       new TerserPlugin({
@@ -118,6 +121,25 @@ module.exports = {
         },
         parallel: require('os').cpus().length
       })
-    ]
+    ],
+    runtimeChunk: {
+      name: 'manifest'
+    },
+    splitChunks: {
+      chunks: 'all',
+      name: true,
+      cacheGroups: {
+        snowy: {
+          test: /[\\/]src[\\/]engine[\\/]/,
+          filename: 'snowy_engine.js',
+          name: 'snowy_engine'
+        },
+        libs: {
+          test: /[\\/]node_modules[\\/]/,
+          filename: 'libs.js',
+          name: 'libs'
+        }
+      }
+    }
   }
 };
