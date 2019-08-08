@@ -1,7 +1,7 @@
 <template>
   <Layout>
     <Controls/>
-    <canvas id="canvas"/>
+    <canvas id="canvas" :no-bottom-nav="false"/>
   </Layout>
 </template>
 

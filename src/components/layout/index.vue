@@ -2,7 +2,7 @@
   <div>
     <slot name="default"></slot>
     <Menu />
-    <BottomNav v-if="showBottomMenu"/>
+    <BottomNav v-if="showBottomMenu && noBottomNav"/>
   </div>
 </template>
 
@@ -14,6 +14,9 @@ export default {
   components: {
     Menu,
     BottomNav
+  },
+  props: {
+    noBottomNav: Boolean
   },
   data() {
     return {
