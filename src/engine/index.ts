@@ -28,3 +28,4 @@ export * from './utils';
 export * from './math';
 export * from './other';
 export * from './deprecated';
+export * from './device';

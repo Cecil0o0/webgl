@@ -70,5 +70,7 @@ export function setup() {
   }
   scene.add(sphere);
 
-  manager.start();
+  renderer.render(scene, camera);
+
+  // manager.start();
 }

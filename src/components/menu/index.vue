@@ -1,5 +1,5 @@
 <template>
-  <div :class="['menu-wrapper', { collapse }]">
+  <div :class="['menu-wrapper', { collapse }]" @click.stop>
     <div class="trigger" @click="collapse = !collapse">
       {{collapse ? '👈' : '👉'}}
     </div>
