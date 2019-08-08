@@ -96,7 +96,8 @@ module.exports = {
           filename: `${value.name}.html`,
           inject: true,
           chunks: [value.name, 'manifest', 'snowy_engine', 'libs'],
-          title: value.title
+          title: value.title,
+          NODE_ENV: process.env.NODE_ENV
         })
     ),
     new VueLoaderPlugin(),
