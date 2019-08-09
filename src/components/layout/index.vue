@@ -2,7 +2,7 @@
   <div>
     <slot name="default"></slot>
     <Menu />
-    <BottomNav v-if="showBottomMenu && noBottomNav"/>
+    <BottomNav v-if="showBottomNav && !noBottomNav" />
   </div>
 </template>
 
@@ -20,15 +20,15 @@ export default {
   },
   data() {
     return {
-      showBottomMenu: false
-    }
+      showBottomNav: false
+    };
   },
   mounted() {
-    if (isMobile() && !isIpad()) this.showBottomMenu = true;
+    if (isMobile() && !isIpad()) this.showBottomNav = true;
   }
-}
+};
 // 禁用微信原生下拉的交互
-document.querySelector('body').addEventListener('touchmove', (e) => {
+document.querySelector('body').addEventListener('touchmove', e => {
   e.preventDefault();
 });
 </script>

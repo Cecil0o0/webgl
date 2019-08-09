@@ -1,12 +1,12 @@
-import {raf} from 'engine/animation';
+import { raf } from 'engine/animation';
 import * as SNOWY from 'engine';
-import {randomColor} from 'engine';
+import { randomColor } from 'engine';
 
 let camera: SNOWY.OrthoCamera;
 let scene: SNOWY.Scene;
 let renderer: SNOWY.Renderer;
 let sphere: SNOWY.Model;
-let spheres: SNOWY.Model[] = [];
+const spheres: SNOWY.Model[] = [];
 
 export const manager = raf(animate, 60);
 let rx = 1;
@@ -23,11 +23,11 @@ function animate() {
   sphere.translateX((tx += 0.01 * dir));
   // sphere.translateY(ty -= 0.001);
   if (s >= 1) {
-    tdir = -1
-  } else if (s <= .5) {
-    tdir = +1
+    tdir = -1;
+  } else if (s <= 0.5) {
+    tdir = +1;
   }
-  s += 0.005 * tdir
+  s += 0.005 * tdir;
   sphere.scaleX(s);
   sphere.scaleY(s);
   sphere.scaleZ(s);
@@ -35,7 +35,7 @@ function animate() {
   spheres.forEach(s => {
     s.rotateX(rx);
     s.rotateY(ry);
-  })
+  });
   renderer.render(scene, camera);
 }
 
@@ -56,16 +56,15 @@ export function setup() {
   }
   sphere = new SNOWY.Model(sphereGeometry, colors);
 
-
   for (let i = 0; i < 5; i++) {
-    let sphereGeometry = new SNOWY.SphereGeometry((i+1) * 10, (i+5), (i+5));
-    let color: number[] = [];
-    for(let j = 0; j < sphereGeometry.indices.length; j++) {
+    const sphereGeometry = new SNOWY.SphereGeometry((i + 1) * 10, i + 5, i + 5);
+    const color: number[] = [];
+    for (let j = 0; j < sphereGeometry.indices.length; j++) {
       color.push(...Object.values(randomColor()));
     }
-    let sphere = new SNOWY.Model(sphereGeometry, colors);
-    sphere.translate(-i / 4, i /4 , 0)
-    scene.add(sphere)
+    const sphere = new SNOWY.Model(sphereGeometry, colors);
+    sphere.translate(-i / 4, i / 4, 0);
+    scene.add(sphere);
     spheres.push(sphere);
   }
   scene.add(sphere);
