@@ -6,14 +6,14 @@ let camera: SNOWY.OrthoCamera;
 let scene: SNOWY.Scene;
 let renderer: SNOWY.Renderer;
 let strangeSphereModel: SNOWY.Model;
-let strangeSphere: SNOWY.StrangeSphere;
+let sphere: SNOWY.Model;
 
 export const manager = raf(animate, 60);
 let ry = 0;
 function animate() {
   let radian = deg2radian((ry += 5));
-  strangeSphere && strangeSphere.reCreate();
   strangeSphereModel.rotateY(radian);
+  sphere.rotateY(radian);
   renderer.render(scene, camera);
 }
 
@@ -35,19 +35,21 @@ export function setup() {
   strangeSphereModel = new SNOWY.Model(strangeSphere, colors, undefined, {
     primitive: 'LINES'
   });
+  strangeSphereModel.translateY(-0.9);
   scene.add(strangeSphereModel);
 
-  // const sphereGeometry = new SNOWY.SphereGeometry(80, 8, 8);
-  // const colors1: number[] = [];
-  // for (let i = 0; i < sphereGeometry.indices.length; i++) {
-  //   colors1.push(...Object.values(randomColor()));
-  // }
-  // sphere = new SNOWY.Model(sphereGeometry, colors1, undefined, {
-  //   primitive: 'LINES'
-  // });
-  // scene.add(sphere);
+  const sphereGeometry = new SNOWY.SphereGeometry(80, 8, 8);
+  const colors1: number[] = [];
+  for (let i = 0; i < sphereGeometry.indices.length; i++) {
+    colors1.push(...Object.values(randomColor()));
+  }
+  sphere = new SNOWY.Model(sphereGeometry, colors1, undefined, {
+    primitive: 'LINES'
+  });
+  sphere.translateY(0.9);
+  scene.add(sphere);
 
   renderer.render(scene, camera);
 
-  // manager.start();
+  manager.start();
 }
