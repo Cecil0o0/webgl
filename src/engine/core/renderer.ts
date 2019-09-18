@@ -1,14 +1,12 @@
-import {getDPR} from 'engine/other';
+import { getDPR } from 'engine/other';
 import Scene from './scene';
 import OrthoCamera from './ortho-camera';
-import PerspectiveCamera from './perspective-camera';
 import {
   getGlContext,
   genProgramWithShaderSource,
-  clear,
+  clear
 } from 'engine/webgl-helper';
-import {matrix, Model} from 'engine';
-import { Matrix } from 'types';
+import { Model } from 'engine';
 
 export default class Renderer {
   domElement: HTMLCanvasElement;
@@ -27,7 +25,7 @@ export default class Renderer {
     this.initGl();
   }
   initGl() {
-    const {gl} = this;
+    const { gl } = this;
     gl.enable(gl.CULL_FACE);
   }
   render(scene: Scene, camera?: OrthoCamera) {
@@ -37,14 +35,14 @@ export default class Renderer {
       if (!model.program) generateProgram(gl, model);
       gl.useProgram(model.program);
       uploadAttribsData(gl, model);
-      uploadUniformsData(gl, model, camera.matrix);
+      uploadUniformsData(gl, model, camera);
 
       if (model.renderType === 'drawElements') {
         gl.drawElements(
-            (gl as any)[model.primitive],
-            model.bufferInfo.indices.length,
-            gl.UNSIGNED_BYTE,
-            0
+          (gl as any)[model.primitive],
+          model.bufferInfo.indices.length,
+          gl.UNSIGNED_BYTE,
+          0
         );
       }
     });
@@ -55,14 +53,14 @@ function generateProgram(gl: WebGLRenderingContext, model: Model) {
   model.program = genProgramWithShaderSource({
     gl,
     fragmentShaderSource: model.shaderSource.fragment,
-    vertexShaderSource: model.shaderSource.vertex,
+    vertexShaderSource: model.shaderSource.vertex
   });
 }
 
 function uploadAttribsData(gl: WebGLRenderingContext, model: Model) {
   // 为保证每次都渲染最新数据，所以每一帧都需要更新缓存区，需要做一下benchmark。
   // 上传200左右的点耗时60微秒，可能存在瓶颈，而且不稳定，有时候会飙到3毫秒之多
-  const {program} = model;
+  const { program } = model;
   const attribCount = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
   for (let i = 0; i < attribCount; i++) {
     console.time('upload GPU Data' + i);
@@ -74,12 +72,12 @@ function uploadAttribsData(gl: WebGLRenderingContext, model: Model) {
     const attribConfig = model.bufferInfo.attributes[attribName];
     gl.bufferData(gl.ARRAY_BUFFER, attribConfig.buffer, gl.DYNAMIC_DRAW);
     gl.vertexAttribPointer(
-        attribLocation,
-        attribConfig.floatNumsPerElement || 4,
-        attribConfig.type || gl.FLOAT,
-        attribConfig.normalize || false,
-        attribConfig.stride || 0,
-        attribConfig.offset || 0
+      attribLocation,
+      attribConfig.floatNumsPerElement || 4,
+      attribConfig.type || gl.FLOAT,
+      attribConfig.normalize || false,
+      attribConfig.stride || 0,
+      attribConfig.offset || 0
     );
     console.timeEnd('upload GPU Data' + i);
   }
@@ -87,17 +85,21 @@ function uploadAttribsData(gl: WebGLRenderingContext, model: Model) {
   // 向GPU上传Elements索引数据
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(
-      gl.ELEMENT_ARRAY_BUFFER,
-      model.bufferInfo.indices,
-      gl.DYNAMIC_DRAW
+    gl.ELEMENT_ARRAY_BUFFER,
+    model.bufferInfo.indices,
+    gl.DYNAMIC_DRAW
   );
 }
 
-function uploadUniformsData(gl: WebGLRenderingContext, model: Model, projectMatrix: Matrix) {
-  // 计算平移、旋转、缩放、视图矩阵、投影矩阵
+function uploadUniformsData(
+  gl: WebGLRenderingContext,
+  model: Model,
+  camera: OrthoCamera
+) {
+  // 计算平移、旋转、缩放、视图矩阵、投影矩阵（即MVP矩阵）
   // 需要1ms，很可能是性能瓶颈
   console.time('pre-render开销');
-  model.preRender(matrix.identity(), projectMatrix);
+  model.preRender(camera.viewMatrix, camera.projectionMatrix);
   console.timeEnd('pre-render开销');
   gl.uniformMatrix4fv(
     gl.getUniformLocation(model.program, 'u_Matrix'),
@@ -106,4 +108,4 @@ function uploadUniformsData(gl: WebGLRenderingContext, model: Model, projectMatr
   );
 }
 
-export {Renderer};
+export { Renderer };

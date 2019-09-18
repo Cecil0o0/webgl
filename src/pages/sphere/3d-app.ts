@@ -1,7 +1,7 @@
 import CubeVertexShaderSource from 'shaders/basic/index.vert';
 import CubeFragmentShaderSource from 'shaders/basic/index.frag';
 import { setupCanvas, deg2radian } from 'engine';
-import { genProgramWithShaderSource, clear, transformUnIndices } from 'engine/webgl-helper';
+import { genProgramWithShaderSource, clear } from 'engine/webgl-helper';
 import { raf } from 'engine/animation';
 import { createSphere } from 'engine/geometry';
 import { Matrix, GeometryElementData } from 'types';
@@ -26,8 +26,8 @@ function animate() {
   clear(gl);
 
   matrix = ortho(-aspect * 2.5, aspect * 2.5, -2.5, 2.5, 100, -100);
-  rotateX(matrix, deg2radian(deg += .3), matrix);
-  rotateY(matrix, deg2radian(deg += .3), matrix);
+  rotateX(matrix, deg2radian((deg += 0.3)), matrix);
+  rotateY(matrix, deg2radian((deg += 0.3)), matrix);
   gl.uniformMatrix4fv(u_Matrix, false, matrix);
 
   gl.drawElements(gl.TRIANGLES, sphere.indices.length, gl.UNSIGNED_BYTE, 0);
@@ -42,20 +42,20 @@ export function render() {
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, sphere.indices, gl.DYNAMIC_DRAW);
-  manager.start()
+  manager.start();
 }
 
 export function start() {
   canvas = document.querySelector('canvas');
   setupCanvas(canvas);
-  aspect = canvas.width / canvas.height
-  gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  aspect = canvas.width / canvas.height;
+  gl = canvas.getContext('webgl');
 
   const program = genProgramWithShaderSource({
     gl,
     vertexShaderSource: CubeVertexShaderSource,
     fragmentShaderSource: CubeFragmentShaderSource
-  })
+  });
 
   gl.useProgram(program);
   gl.enable(gl.CULL_FACE);
@@ -69,23 +69,9 @@ export function start() {
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
 
   // 必须要bindBuffer才可以调用该方法
-  gl.vertexAttribPointer(
-    a_Position,
-    3,
-    gl.FLOAT,
-    false,
-    28,
-    0
-  )
+  gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 28, 0);
 
-  gl.vertexAttribPointer(
-    a_Color,
-    4,
-    gl.FLOAT,
-    false,
-    28,
-    12
-  )
+  gl.vertexAttribPointer(a_Color, 4, gl.FLOAT, false, 28, 12);
 
   clear(gl);
 }

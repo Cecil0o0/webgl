@@ -1,6 +1,14 @@
+/*
+ * @Author: chenhaojie
+ * @Date: 2019-08-14 00:26:47
+ * @LastEditors: chenhaojie
+ * @LastEditTime: 2019-08-21 23:39:17
+ * @Email: jiegithub@gmail.com
+ * @Description:
+ */
 import * as matrix from 'engine/webgl-matrix';
-import {Matrix, PositionsArray, IndicesArray} from 'types';
-import {Vector3, deg2radian} from 'engine';
+import { Matrix, PositionsArray, IndicesArray } from 'types';
+import { Vector3, deg2radian } from 'engine';
 import Object3D from './object3d';
 import SphereNoTextureVertexShaderSrc from './shader/no-texture/index.vert';
 import SphereNoTextureFragmentShaderSrc from './shader/no-texture/index.frag';
@@ -62,36 +70,36 @@ export default class Model extends Object3D {
     vertex: string;
   } = {
     fragment: SphereNoTextureFragmentShaderSrc,
-    vertex: SphereNoTextureVertexShaderSrc,
+    vertex: SphereNoTextureVertexShaderSrc
   };
 
   constructor(
-      geometry: Geometry,
-      colors: number[],
-      options?: {
+    geometry: Geometry,
+    colors: number[],
+    options?: {
       shaderSource: {
-      fragment: string;
-      vertex: string;
+        fragment: string;
+        vertex: string;
       };
-      },
-      Object3DOptions?: {
+    },
+    Object3DOptions?: {
       primitive?: string;
       renderType?: string;
       program?: WebGLProgram;
-      }
+    }
   ) {
     super(Object3DOptions);
     this.bufferInfo = {
       attributes: {
         a_Position: {
           buffer: geometry.positions,
-          floatNumsPerElement: 3,
+          floatNumsPerElement: 3
         },
         a_Color: {
-          buffer: Float32Array.from(colors),
-        },
+          buffer: Float32Array.from(colors)
+        }
       },
-      indices: geometry.indices,
+      indices: geometry.indices
     };
     if (options && options.shaderSource) {
       this.shaderSource = options.shaderSource;
@@ -187,11 +195,11 @@ export default class Model extends Object3D {
     const modelMatrix = matrix.identity();
     if (this.translation) {
       matrix.translate(
-          modelMatrix,
-          this.translation.x,
-          this.translation.y,
-          this.translation.z,
-          modelMatrix
+        modelMatrix,
+        this.translation.x,
+        this.translation.y,
+        this.translation.z,
+        modelMatrix
       );
     }
     if (this.rotation) {
@@ -201,25 +209,27 @@ export default class Model extends Object3D {
     }
     if (this.scalation) {
       matrix.scale(
-          modelMatrix,
-          this.scalation.x,
-          this.scalation.y,
-          this.scalation.z,
-          modelMatrix
+        modelMatrix,
+        this.scalation.x,
+        this.scalation.y,
+        this.scalation.z,
+        modelMatrix
       );
     }
+    // 模型矩阵
     this.uniforms.u_ModelMatrix = modelMatrix;
 
-    // 重新计算矩阵
+    // 视图矩阵
     matrix.multiply(
-        viewMatrix,
-        this.uniforms.u_ModelMatrix,
-        this.uniforms.u_MVPMatrix
+      viewMatrix,
+      this.uniforms.u_ModelMatrix,
+      this.uniforms.u_MVPMatrix
     );
+    // 投影矩阵
     matrix.multiply(
-        projectionMatrix,
-        this.uniforms.u_MVPMatrix,
-        this.uniforms.u_MVPMatrix
+      projectionMatrix,
+      this.uniforms.u_MVPMatrix,
+      this.uniforms.u_MVPMatrix
     );
   }
 }

@@ -38,6 +38,7 @@
     "less-loader": "^5.0.0",
     "lint-staged": "^8.2.1",
     "postcss-loader": "^3.0.0",
+    "prettier": "^1.18.2",
     "raw-loader": "^2.0.0",
     "style-loader": "^0.23.1",
     "terser-webpack-plugin": "^1.4.1",
@@ -49,11 +50,12 @@
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.2.0",
-    "yargs": "^13.3.0"
+    "yargs": "^13.3.0",
+    "@types/gl-matrix": "^2.4.5"
   },
   "dependencies": {
     "dynamics.js": "^1.1.5",
-    "mathjs": "^6.0.3",
+    "gl-matrix": "^3.1.0",
     "stats.js": "^0.17.0",
     "vue": "^2.6.10"
   },

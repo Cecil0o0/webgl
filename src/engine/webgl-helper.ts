@@ -1,6 +1,10 @@
-import { GeometryElementData } from "types";
+import { GeometryElementData } from 'types';
 
-export function genShader(gl: WebGLRenderingContext, shaderType: number, shaderSourceCode: string) {
+export function genShader(
+  gl: WebGLRenderingContext,
+  shaderType: number,
+  shaderSourceCode: string
+) {
   // Create a shader
   const shader = gl.createShader(shaderType);
   // Filling source code for the shader
@@ -46,7 +50,7 @@ export function genProgram(
 export function genProgramWithShaderSource({
   gl,
   vertexShaderSource,
-  fragmentShaderSource,
+  fragmentShaderSource
 }: {
   gl: WebGLRenderingContext;
   vertexShaderSource: string;
@@ -63,7 +67,10 @@ export function genProgramWithShaderSource({
  * 清空画布
  * @param color [r, g, b, a]需要归一化
  */
-export function clear(gl: WebGLRenderingContext, color: number[] = [0.0, 0.0, 0.0, 1.0]) {
+export function clear(
+  gl: WebGLRenderingContext,
+  color: number[] = [0.0, 0.0, 0.0, 1.0]
+) {
   // Set clearColor
   gl.clearColor(color[0], color[1], color[2], color[3]);
 
@@ -72,7 +79,7 @@ export function clear(gl: WebGLRenderingContext, color: number[] = [0.0, 0.0, 0.
 }
 
 export function getGlContext(canvas: HTMLCanvasElement) {
-  return canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  return canvas.getContext('webgl');
 }
 
 /**
@@ -80,9 +87,19 @@ export function getGlContext(canvas: HTMLCanvasElement) {
  * @param data
  * @param countPerElement
  */
-export function transformUnIndices(data: GeometryElementData, countPerElement: number = 7): Float32Array {
-  return Float32Array.from(data.indices.reduce((acc: number[], value) => {
-    acc.push(...data.vertices.slice(value * countPerElement, (value + 1) * countPerElement));
-    return acc;
-  }, []));
+export function transformUnIndices(
+  data: GeometryElementData,
+  countPerElement: number = 7
+): Float32Array {
+  return Float32Array.from(
+    data.indices.reduce((acc: number[], value) => {
+      acc.push(
+        ...data.vertices.slice(
+          value * countPerElement,
+          (value + 1) * countPerElement
+        )
+      );
+      return acc;
+    }, [])
+  );
 }

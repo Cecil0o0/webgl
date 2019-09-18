@@ -95,7 +95,7 @@ module.exports = {
           template: 'templates/index.html',
           filename: `${value.name}.html`,
           inject: true,
-          chunks: [value.name, 'manifest', 'snowy_engine', 'libs'],
+          chunks: [value.name, 'runtime', 'libs', 'components', 'engine'],
           title: value.title,
           NODE_ENV: process.env.NODE_ENV
         })
@@ -124,16 +124,21 @@ module.exports = {
       })
     ],
     runtimeChunk: {
-      name: 'manifest'
+      name: 'runtime'
     },
     splitChunks: {
       chunks: 'all',
       name: true,
       cacheGroups: {
-        snowy: {
+        components: {
+          test: /[\\/]src[\\/]components[\\/]/,
+          filename: 'components.js',
+          name: 'components'
+        },
+        engine: {
           test: /[\\/]src[\\/]engine[\\/]/,
-          filename: 'snowy_engine.js',
-          name: 'snowy_engine'
+          filename: 'engine.js',
+          name: 'engine'
         },
         libs: {
           test: /[\\/]node_modules[\\/]/,

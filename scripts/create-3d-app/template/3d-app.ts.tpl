@@ -21,7 +21,7 @@ export function start() {
   canvas = document.querySelector('canvas');
   setupCanvas(canvas);
   aspect = canvas.width / canvas.height
-  gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  gl = canvas.getContext('webgl');
 
   const program = genProgramWithShaderSource({
     gl,

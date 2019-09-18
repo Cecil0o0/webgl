@@ -1,11 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const argv = require('yargs').argv;
+const prettier = require('prettier');
 
 const moduleName = argv.S || 'new-app';
 const appRelativePath = 'src/pages';
 const dst = path.resolve(__dirname, `../../${appRelativePath}/`);
-const source = path.resolve(__dirname, 'template');
+const source = path.resolve(__dirname, argv.T === 'snowy' ? 'snowy-template' : 'template');
 
 fs.readdir(source, (err, files) => {
   if (err) return;
@@ -32,7 +33,7 @@ fs.readdir(source, (err, files) => {
         title: moduleName,
         entry: `${appRelativePath}/${moduleName}`,
       });
-      fs.writeFileSync(targetFile, `module.exports = ${JSON.stringify(apps)}`, {
+      fs.writeFileSync(targetFile, prettier.format(`module.exports = ${JSON.stringify(apps)}`, { parser: 'babel' }), {
         flag: 'w',
       });
     }
