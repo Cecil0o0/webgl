@@ -4,15 +4,15 @@ import { setupCanvas, deg2radian } from 'engine';
 import { genProgramWithShaderSource, clear } from 'engine/webgl-helper';
 import { raf } from 'engine/animation';
 import { createSphere } from 'engine/geometry';
-import { Matrix, GeometryElementData } from 'types';
-import { ortho, rotateX, rotateY } from 'engine/webgl-matrix';
+import { GeometryElementData } from 'types';
 import Stats from 'stats.js';
+import { mat4 } from 'gl-matrix';
 
 let canvas: HTMLCanvasElement;
 let gl: WebGLRenderingContext;
 let aspect: number;
 let u_Matrix: WebGLUniformLocation;
-let matrix: Matrix;
+let matrix: mat4 = mat4.create();
 let sphere: GeometryElementData;
 const stats = new Stats();
 stats.showPanel(0);
@@ -25,9 +25,11 @@ function animate() {
   if (deg > 359) deg = 0;
   clear(gl);
 
-  matrix = ortho(-aspect * 2.5, aspect * 2.5, -2.5, 2.5, 100, -100);
-  rotateX(matrix, deg2radian((deg += 0.3)), matrix);
-  rotateY(matrix, deg2radian((deg += 0.3)), matrix);
+  const radian = deg2radian((deg += 0.3));
+  mat4.ortho(matrix, -aspect * 2.5, aspect * 2.5, -2.5, 2.5, 100, -100);
+  mat4.rotateX(matrix, matrix, radian);
+  mat4.rotateY(matrix, matrix, radian);
+
   gl.uniformMatrix4fv(u_Matrix, false, matrix);
 
   gl.drawElements(gl.TRIANGLES, sphere.indices.length, gl.UNSIGNED_BYTE, 0);

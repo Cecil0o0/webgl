@@ -3,8 +3,6 @@ export type ColorsArray = Float32Array;
 export type IndicesArray = Uint8Array | Uint16Array;
 export type PositionsArray = Float32Array;
 
-export type Matrix = Float32Array;
-
 // 矩阵数据
 export type GeometryElementData = {
   indices: Uint8Array;

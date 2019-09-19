@@ -1,18 +1,10 @@
-/*
- * @Author: chenhaojie
- * @Date: 2019-08-14 00:26:47
- * @LastEditors: chenhaojie
- * @LastEditTime: 2019-08-21 23:39:17
- * @Email: jiegithub@gmail.com
- * @Description:
- */
-import * as matrix from 'engine/webgl-matrix';
-import { Matrix, PositionsArray, IndicesArray } from 'types';
-import { Vector3, deg2radian } from 'engine';
+import { PositionsArray, IndicesArray } from 'types';
+import { deg2radian } from 'engine';
 import Object3D from './object3d';
 import SphereNoTextureVertexShaderSrc from './shader/no-texture/index.vert';
 import SphereNoTextureFragmentShaderSrc from './shader/no-texture/index.frag';
 import Geometry from './geometry/basic';
+import { mat4, vec3 } from 'gl-matrix';
 
 // 模型顶点数据
 class ModelBufferInfo {
@@ -41,28 +33,28 @@ class ModelBufferInfo {
 // 模型矩阵转换数据
 class Uniforms {
   // MVP（模型视图投影）矩阵
-  u_MVPMatrix?: Matrix;
+  u_MVPMatrix?: mat4;
   // 模型矩阵
-  u_ModelMatrix?: Matrix;
+  u_ModelMatrix?: mat4;
   // 法向量矩阵
-  u_NormalMatrix?: Matrix;
+  u_NormalMatrix?: mat4;
   // 全局光照
   u_LightColor?: any;
 }
 
 export default class Model extends Object3D {
   // 偏移
-  translation = new Vector3();
+  translation = vec3.create();
   // 旋转角度
   // 角度制
-  rotation = new Vector3();
+  rotation = vec3.create();
   // 缩放
-  scalation = new Vector3(1, 1, 1);
+  scalation = vec3.fromValues(1, 1, 1);
   // 位置、颜色、纹理等缓冲数据
   bufferInfo: ModelBufferInfo;
   // 矩阵数据
   uniforms: Uniforms = {
-    u_MVPMatrix: matrix.identity()
+    u_MVPMatrix: mat4.create()
   };
   // shader源码
   shaderSource: {
@@ -111,124 +103,96 @@ export default class Model extends Object3D {
   }
 
   // 平移属性变换方法
-  translateV(v3: Vector3) {
-    this.translateX(v3.x);
-    this.translateY(v3.y);
-    this.translateZ(v3.z);
+  translateV(v3: vec3) {
+    this.translation.set(v3, 0);
   }
 
-  translate(x = 0, y = 0, z = 0) {
-    // 不套用translateV原因有二
-    // 调用栈少一层函数
-    // 不用new对象
-    this.translateX(x);
-    this.translateY(y);
-    this.translateZ(z);
+  translate(x?: number, y?: number, z?: number) {
+    this.translation.set([x, y, z], 0);
   }
 
   translateX(x = 0) {
-    this.translation.setX(x);
+    this.translation.set([x], 0);
   }
 
   translateY(y = 0) {
-    this.translation.setY(y);
+    this.translation.set([y], 1);
   }
 
   translateZ(z = 0) {
-    this.translation.setZ(z);
+    this.translation.set([z], 2);
   }
 
   // 旋转属性变换方法
-  rotateV(v3: Vector3) {
-    this.rotateX(v3.x);
-    this.rotateY(v3.y);
-    this.rotateZ(v3.z);
+  rotateV(v3: vec3) {
+    this.rotation.set(v3, 0);
   }
 
-  rotate(x = 0, y = 0, z = 0) {
-    // 理由同上
-    this.rotateX(x);
-    this.rotateY(y);
-    this.rotateZ(z);
+  rotate(x?: number, y?: number, z?: number) {
+    this.rotation.set([x, y, z], 0);
   }
 
   rotateX(x = 0) {
-    this.rotation.setX(x);
+    this.rotation.set([x], 0);
   }
 
   rotateY(y = 0) {
-    this.rotation.setY(y);
+    this.rotation.set([y], 1);
   }
 
   rotateZ(z = 0) {
-    this.rotation.setZ(z);
+    this.rotation.set([z], 2);
   }
 
   // 缩放属性变换方法
-  scaleV(v3: Vector3) {
-    this.scaleX(v3.x);
-    this.scaleY(v3.y);
-    this.scaleZ(v3.z);
+  scaleV(v3: vec3) {
+    this.scalation.set(v3, 0);
   }
 
-  scale(x = 0, y = 0, z = 0) {
-    // 理由同上
-    this.scaleX(x);
-    this.scaleY(y);
-    this.scaleZ(z);
+  scale(x?: number, y?: number, z?: number) {
+    this.scalation.set([x, y, z], 0);
   }
 
   scaleX(x = 0) {
-    this.scalation.setX(x);
+    this.scalation.set([x], 0);
   }
 
   scaleY(y = 0) {
-    this.scalation.setY(y);
+    this.scalation.set([y], 1);
   }
 
   scaleZ(z = 0) {
-    this.scalation.setZ(z);
+    this.scalation.set([z], 2);
   }
 
   // 用于对模型的重新渲染，即顶点坐标和矩阵变换
-  preRender(viewMatrix: Matrix, projectionMatrix: Matrix) {
-    const modelMatrix = matrix.identity();
+  preRender(viewMatrix: mat4, projectionMatrix: mat4) {
+    const modelMatrix = mat4.create();
     if (this.translation) {
-      matrix.translate(
-        modelMatrix,
-        this.translation.x,
-        this.translation.y,
-        this.translation.z,
-        modelMatrix
-      );
+      mat4.translate(modelMatrix, modelMatrix, this.translation);
     }
     if (this.rotation) {
-      matrix.rotateX(modelMatrix, deg2radian(this.rotation.x), modelMatrix);
-      matrix.rotateY(modelMatrix, deg2radian(this.rotation.y), modelMatrix);
-      matrix.rotateZ(modelMatrix, deg2radian(this.rotation.z), modelMatrix);
+      this.rotation;
+      mat4.rotateX(modelMatrix, modelMatrix, deg2radian(this.rotation[0]));
+      mat4.rotateY(modelMatrix, modelMatrix, deg2radian(this.rotation[1]));
+      mat4.rotateZ(modelMatrix, modelMatrix, deg2radian(this.rotation[2]));
     }
     if (this.scalation) {
-      matrix.scale(
-        modelMatrix,
-        this.scalation.x,
-        this.scalation.y,
-        this.scalation.z,
-        modelMatrix
-      );
+      mat4.scale(modelMatrix, modelMatrix, this.scalation);
     }
     // 模型矩阵
     this.uniforms.u_ModelMatrix = modelMatrix;
 
     // 视图矩阵
-    matrix.multiply(
+    mat4.multiply(
+      this.uniforms.u_MVPMatrix,
       viewMatrix,
-      this.uniforms.u_ModelMatrix,
-      this.uniforms.u_MVPMatrix
+      this.uniforms.u_ModelMatrix
     );
     // 投影矩阵
-    matrix.multiply(
-      projectionMatrix,
+    mat4.multiply(
       this.uniforms.u_MVPMatrix,
+      projectionMatrix,
       this.uniforms.u_MVPMatrix
     );
   }

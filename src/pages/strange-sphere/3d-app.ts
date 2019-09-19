@@ -36,6 +36,7 @@ export function setup() {
     primitive: 'LINES'
   });
   strangeSphereModel.translateY(-0.9);
+  strangeSphereModel.scale(0.7, 0.7, 0.7);
   scene.add(strangeSphereModel);
 
   const sphereGeometry = new SNOWY.SphereGeometry(80, 8, 8);

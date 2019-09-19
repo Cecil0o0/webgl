@@ -1,16 +1,23 @@
 <template>
   <div class="bottom-nav" @click.stop>
     <div
-      :class="['item', {active: idx === activeIndex}]"
+      :class="['item', { active: idx === activeIndex }]"
       v-for="(item, idx) in list"
       :key="idx"
-      :style="{width: `${100 / list.length}%`}"
+      :style="{ width: `${100 / list.length}%` }"
       @click="activeIndex = idx"
     >
       <div class="rubber-band" v-if="activeIndex === idx">
         <svg :viewBox="`0 0 ${wave.width} ${wave.height}`">
           <path
-            :d="`M0 ${wave.height} C${wave.width / 4} ${wave.height} ${wave.width / 4} 0 ${wave.width / 2} 0 C${wave.width / 4 * 3} 0 ${wave.width / 4 * 3} ${wave.height} ${wave.width} ${wave.height}`"
+            :d="
+              `M0 ${wave.height} C${wave.width / 4} ${
+                wave.height
+              } ${wave.width / 4} 0 ${wave.width / 2} 0 C${(wave.width / 4) *
+                3} 0 ${(wave.width / 4) * 3} ${wave.height} ${wave.width} ${
+                wave.height
+              }`
+            "
             stroke="#fff"
             fill="#fff"
           />
@@ -20,14 +27,19 @@
         <div
           class="icon-wrapper"
           :style="{
-            background: activeIndex === idx ? `linear-gradient(135deg, ${item.startColor}, ${item.endColor}` : null,
+            background:
+              activeIndex === idx
+                ? `linear-gradient(135deg, ${item.startColor}, ${item.endColor}`
+                : null,
             transform: activeIndex === idx && `translateY(${ballTranslateY}px)`
           }"
-          :id="'icon'+idx"
+          :id="'icon' + idx"
         >
           <Icon :type="item.icon" />
         </div>
-        <span :style="{color: activeIndex === idx ? item.endColor : null}">{{item.label}}</span>
+        <span :style="{ color: activeIndex === idx ? item.endColor : null }">{{
+          item.label
+        }}</span>
       </div>
     </div>
   </div>
@@ -52,8 +64,46 @@ export default {
   components: {
     Icon
   },
+  props: {
+    list: {
+      type: Array,
+      default: [
+        {
+          label: '首页',
+          icon: 'icon-system_phone_single',
+          startColor: 'hsl(183, 95%, 69%)',
+          endColor: 'hsl(216, 75%, 57%)'
+        },
+        {
+          label: '日历',
+          icon: 'icon-system_phone_day',
+          startColor: '#582ceb',
+          endColor: '#895be4'
+        },
+        {
+          label: '定位',
+          icon: 'icon-system_phone_addres',
+          startColor: '#ffc183',
+          endColor: '#fff295'
+        },
+        {
+          label: '邮箱',
+          icon: 'icon-system_phone_email',
+          startColor: '#fab162',
+          endColor: '#e96bcb'
+        },
+        {
+          label: '我',
+          icon: 'icon-system_phone_user',
+          startColor: '#dfff7a',
+          endColor: '#7effb3'
+        }
+      ]
+    }
+  },
   watch: {
     activeIndex(idx, preIdx) {
+      this.$emit('change', idx);
       const id = 'icon' + idx;
       const dom = document.querySelector('#icon' + idx);
       const rubberband = document.querySelector('.rubber-band');
@@ -85,38 +135,6 @@ export default {
   data() {
     return {
       activeIndex: -1,
-      list: [
-        {
-          label: '首页',
-          icon: 'icon-system_phone_single',
-          startColor: 'hsl(183, 95%, 69%)',
-          endColor: 'hsl(216, 75%, 57%)'
-        },
-        {
-          label: '日历',
-          icon: 'icon-system_phone_day',
-          startColor: '#582ceb',
-          endColor: '#895be4'
-        },
-        {
-          label: '定位',
-          icon: 'icon-system_phone_addres',
-          startColor: '#ffc183',
-          endColor: '#fff295'
-        },
-        {
-          label: '邮箱',
-          icon: 'icon-system_phone_email',
-          startColor: '#fab162',
-          endColor: '#e96bcb'
-        },
-        {
-          label: '我',
-          icon: 'icon-system_phone_user',
-          startColor: '#dfff7a',
-          endColor: '#7effb3'
-        }
-      ],
       wave: {
         height: waveAnimateHeight,
         width: 200
@@ -194,4 +212,3 @@ export default {
   }
 }
 </style>
-
