@@ -1,9 +1,16 @@
 import Model from './model';
+import { Light } from './light/basic';
 
 export default class Scene {
-  objList: Model[] = [];
-  add(object: Model): number {
-    this.objList.push(object);
-    return this.objList.length;
+  modelList: Model[] = [];
+  lightList: Light[] = [];
+  add(object: Model | Light) {
+    if (object instanceof Model) {
+      this.modelList.push(object);
+    } else if (object instanceof Light) {
+      this.lightList.push(object);
+    } else {
+      throw new Error("can't recognize object");
+    }
   }
 }

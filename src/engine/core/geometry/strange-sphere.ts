@@ -1,7 +1,7 @@
 import Geometry from './basic';
 import { IndicesArray, PositionsArray } from 'types';
 
-class StrangeSphere extends Geometry {
+export class StrangeSphereGeometry extends Geometry {
   indices: IndicesArray;
   positions: PositionsArray;
   constructor() {
@@ -32,5 +32,3 @@ class StrangeSphere extends Geometry {
     this.positions = Float32Array.from(positions);
   }
 }
-
-export { StrangeSphere };

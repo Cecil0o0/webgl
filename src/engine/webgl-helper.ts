@@ -1,4 +1,6 @@
+import debug from 'debug';
 import { GeometryElementData } from 'types';
+const log = debug('webgl-helper');
 
 export function genShader(
   gl: WebGLRenderingContext,
@@ -36,7 +38,7 @@ export function genProgram(
   gl.linkProgram(program);
   let result = gl.getProgramParameter(program, gl.LINK_STATUS);
   if (result) {
-    console.log('着色器程序创建成功');
+    log('着色器程序创建成功');
     return program;
   }
   let errorlog = gl.getProgramInfoLog(program);

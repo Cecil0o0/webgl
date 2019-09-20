@@ -86,7 +86,8 @@ module.exports = {
   },
   devtool: !isProduction ? 'source-map' : undefined,
   externals: {
-    vue: 'Vue'
+    vue: 'Vue',
+    'vue-color': 'VueColor'
   },
   plugins: [
     ...apps.map(

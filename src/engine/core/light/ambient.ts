@@ -1,9 +1,8 @@
-import Light from './basic';
+import { Light } from './basic';
+import { vec3 } from 'gl-matrix';
 
-class AmbientLight extends Light {
-  constructor() {
-    super();
+export class AmbientLight extends Light {
+  constructor(color: vec3, intensity: number) {
+    super(color, intensity);
   }
 }
-
-export { AmbientLight };

@@ -4,7 +4,7 @@ import Object3D from './object3d';
 import SphereNoTextureVertexShaderSrc from './shader/no-texture/index.vert';
 import SphereNoTextureFragmentShaderSrc from './shader/no-texture/index.frag';
 import Geometry from './geometry/basic';
-import { mat4, vec3 } from 'gl-matrix';
+import { mat4 } from 'gl-matrix';
 
 // 模型顶点数据
 class ModelBufferInfo {
@@ -43,13 +43,9 @@ class Uniforms {
 }
 
 export default class Model extends Object3D {
-  // 偏移
-  translation = vec3.create();
-  // 旋转角度
-  // 角度制
-  rotation = vec3.create();
-  // 缩放
-  scalation = vec3.fromValues(1, 1, 1);
+  program: WebGLProgram;
+  primitive: string;
+  renderType: string;
   // 位置、颜色、纹理等缓冲数据
   bufferInfo: ModelBufferInfo;
   // 矩阵数据
@@ -80,7 +76,11 @@ export default class Model extends Object3D {
       program?: WebGLProgram;
     }
   ) {
-    super(Object3DOptions);
+    super();
+    this.primitive = Object3DOptions.primitive || 'TRIANGLES';
+    this.renderType = Object3DOptions.renderType || 'drawElements';
+    this.program = Object3DOptions.program;
+
     this.bufferInfo = {
       attributes: {
         a_Position: {
@@ -100,69 +100,6 @@ export default class Model extends Object3D {
 
   setBufferInfo(bufferInfo: ModelBufferInfo) {
     this.bufferInfo = bufferInfo;
-  }
-
-  // 平移属性变换方法
-  translateV(v3: vec3) {
-    this.translation.set(v3, 0);
-  }
-
-  translate(x?: number, y?: number, z?: number) {
-    this.translation.set([x, y, z], 0);
-  }
-
-  translateX(x = 0) {
-    this.translation.set([x], 0);
-  }
-
-  translateY(y = 0) {
-    this.translation.set([y], 1);
-  }
-
-  translateZ(z = 0) {
-    this.translation.set([z], 2);
-  }
-
-  // 旋转属性变换方法
-  rotateV(v3: vec3) {
-    this.rotation.set(v3, 0);
-  }
-
-  rotate(x?: number, y?: number, z?: number) {
-    this.rotation.set([x, y, z], 0);
-  }
-
-  rotateX(x = 0) {
-    this.rotation.set([x], 0);
-  }
-
-  rotateY(y = 0) {
-    this.rotation.set([y], 1);
-  }
-
-  rotateZ(z = 0) {
-    this.rotation.set([z], 2);
-  }
-
-  // 缩放属性变换方法
-  scaleV(v3: vec3) {
-    this.scalation.set(v3, 0);
-  }
-
-  scale(x?: number, y?: number, z?: number) {
-    this.scalation.set([x, y, z], 0);
-  }
-
-  scaleX(x = 0) {
-    this.scalation.set([x], 0);
-  }
-
-  scaleY(y = 0) {
-    this.scalation.set([y], 1);
-  }
-
-  scaleZ(z = 0) {
-    this.scalation.set([z], 2);
   }
 
   // 用于对模型的重新渲染，即顶点坐标和矩阵变换

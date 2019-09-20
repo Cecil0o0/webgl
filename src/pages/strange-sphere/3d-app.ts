@@ -1,12 +1,15 @@
 import { raf } from 'engine/animation';
 import * as SNOWY from 'engine';
 import { randomColor, deg2radian } from 'engine';
+import { AmbientLight } from 'engine/core/light';
+import { vec3 } from 'gl-matrix';
 
 let camera: SNOWY.OrthoCamera;
 let scene: SNOWY.Scene;
 let renderer: SNOWY.Renderer;
 let strangeSphereModel: SNOWY.Model;
 let sphere: SNOWY.Model;
+export let ambientLight: AmbientLight;
 
 export const manager = raf(animate, 60);
 let ry = 0;
@@ -27,14 +30,19 @@ export function setup() {
   const aspect = window.innerWidth / window.innerHeight;
   camera = new SNOWY.OrthoCamera(-aspect * 2, aspect * 2, -2, 2, -100, 100);
 
-  const strangeSphere = new SNOWY.StrangeSphere();
+  const strangeSphereGeometry = new SNOWY.StrangeSphereGeometry();
   const colors: number[] = [];
-  for (let i = 0; i < strangeSphere.indices.length; i++) {
+  for (let i = 0; i < strangeSphereGeometry.indices.length; i++) {
     colors.push(...Object.values(randomColor()));
   }
-  strangeSphereModel = new SNOWY.Model(strangeSphere, colors, undefined, {
-    primitive: 'LINES'
-  });
+  strangeSphereModel = new SNOWY.Model(
+    strangeSphereGeometry,
+    colors,
+    undefined,
+    {
+      primitive: 'LINES'
+    }
+  );
   strangeSphereModel.translateY(-0.9);
   strangeSphereModel.scale(0.7, 0.7, 0.7);
   scene.add(strangeSphereModel);
@@ -49,6 +57,10 @@ export function setup() {
   });
   sphere.translateY(0.9);
   scene.add(sphere);
+
+  // 添加环境光
+  ambientLight = new AmbientLight(vec3.fromValues(255, 255, 255), 1);
+  scene.add(ambientLight);
 
   renderer.render(scene, camera);
 

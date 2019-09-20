@@ -6,7 +6,8 @@ import {
   genProgramWithShaderSource,
   clear
 } from 'engine/webgl-helper';
-import { Model } from 'engine';
+import { Model, console_time, console_timeEnd } from 'engine';
+import { AmbientLight } from './light';
 
 export default class Renderer {
   domElement: HTMLCanvasElement;
@@ -31,11 +32,11 @@ export default class Renderer {
   render(scene: Scene, camera?: OrthoCamera) {
     const gl = this.gl;
     clear(gl);
-    scene.objList.forEach(model => {
+    scene.modelList.forEach(model => {
       if (!model.program) generateProgram(gl, model);
       gl.useProgram(model.program);
       uploadAttribsData(gl, model);
-      uploadUniformsData(gl, model, camera);
+      uploadUniformsData(gl, model, camera, scene);
 
       if (model.renderType === 'drawElements') {
         gl.drawElements(
@@ -63,7 +64,7 @@ function uploadAttribsData(gl: WebGLRenderingContext, model: Model) {
   const { program } = model;
   const attribCount = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
   for (let i = 0; i < attribCount; i++) {
-    console.time('upload GPU Data' + i);
+    console_time('upload GPU Data' + i);
     const attribInfo = gl.getActiveAttrib(program, i);
     const attribName = attribInfo.name;
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
@@ -79,7 +80,7 @@ function uploadAttribsData(gl: WebGLRenderingContext, model: Model) {
       attribConfig.stride || 0,
       attribConfig.offset || 0
     );
-    console.timeEnd('upload GPU Data' + i);
+    console_timeEnd('upload GPU Data' + i);
   }
 
   // 向GPU上传Elements索引数据
@@ -94,18 +95,34 @@ function uploadAttribsData(gl: WebGLRenderingContext, model: Model) {
 function uploadUniformsData(
   gl: WebGLRenderingContext,
   model: Model,
-  camera: OrthoCamera
+  camera: OrthoCamera,
+  scene: Scene
 ) {
   // 计算平移、旋转、缩放、视图矩阵、投影矩阵（即MVP矩阵）
   // 需要1ms，很可能是性能瓶颈
-  console.time('pre-render开销');
+  console_time('计算MVP矩阵开销');
   model.preRender(camera.viewMatrix, camera.projectionMatrix);
-  console.timeEnd('pre-render开销');
+  console_timeEnd('计算MVP矩阵开销');
+  // 上传MVP矩阵数据到GPU
   gl.uniformMatrix4fv(
     gl.getUniformLocation(model.program, 'u_Matrix'),
     false,
     model.uniforms.u_MVPMatrix
   );
+  console_time('上传环境光数据给GPU');
+  scene.lightList.forEach(light => {
+    if (light instanceof AmbientLight) {
+      gl.uniform3fv(
+        gl.getUniformLocation(model.program, 'u_LightColor'),
+        light.color
+      );
+      gl.uniform1f(
+        gl.getUniformLocation(model.program, 'u_LightFactor'),
+        light.intensity
+      );
+    }
+  });
+  console_timeEnd('上传环境光数据给GPU');
 }
 
 export { Renderer };
