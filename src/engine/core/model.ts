@@ -38,14 +38,12 @@ class Uniforms {
   u_ModelMatrix?: mat4;
   // 法向量矩阵
   u_NormalMatrix?: mat4;
-  // 全局光照
-  u_LightColor?: any;
 }
 
 export default class Model extends Object3D {
   program: WebGLProgram;
-  primitive: string;
-  renderType: string;
+  primitive: string = 'TRIANGLES';
+  renderType: string = 'drawElements';
   // 位置、颜色、纹理等缓冲数据
   bufferInfo: ModelBufferInfo;
   // 矩阵数据
@@ -69,18 +67,9 @@ export default class Model extends Object3D {
         fragment: string;
         vertex: string;
       };
-    },
-    Object3DOptions?: {
-      primitive?: string;
-      renderType?: string;
-      program?: WebGLProgram;
     }
   ) {
     super();
-    this.primitive = Object3DOptions.primitive || 'TRIANGLES';
-    this.renderType = Object3DOptions.renderType || 'drawElements';
-    this.program = Object3DOptions.program;
-
     this.bufferInfo = {
       attributes: {
         a_Position: {

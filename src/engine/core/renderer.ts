@@ -8,6 +8,7 @@ import {
 } from 'engine/webgl-helper';
 import { Model, console_time, console_timeEnd } from 'engine';
 import { AmbientLight } from './light';
+import { vec3, vec4 } from 'gl-matrix';
 
 export default class Renderer {
   domElement: HTMLCanvasElement;
@@ -110,6 +111,16 @@ function uploadUniformsData(
     model.uniforms.u_MVPMatrix
   );
   console_time('上传环境光数据给GPU');
+  // 默认给个环境光
+  const light = new AmbientLight(vec3.fromValues(255, 255, 255), 1);
+  gl.uniform3fv(
+    gl.getUniformLocation(model.program, 'u_LightColor'),
+    light.color
+  );
+  gl.uniform1f(
+    gl.getUniformLocation(model.program, 'u_LightFactor'),
+    light.intensity
+  );
   scene.lightList.forEach(light => {
     if (light instanceof AmbientLight) {
       gl.uniform3fv(

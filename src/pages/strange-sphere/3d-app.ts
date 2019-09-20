@@ -35,14 +35,8 @@ export function setup() {
   for (let i = 0; i < strangeSphereGeometry.indices.length; i++) {
     colors.push(...Object.values(randomColor()));
   }
-  strangeSphereModel = new SNOWY.Model(
-    strangeSphereGeometry,
-    colors,
-    undefined,
-    {
-      primitive: 'LINES'
-    }
-  );
+  strangeSphereModel = new SNOWY.Model(strangeSphereGeometry, colors);
+  strangeSphereModel.primitive = 'LINES';
   strangeSphereModel.translateY(-0.9);
   strangeSphereModel.scale(0.7, 0.7, 0.7);
   scene.add(strangeSphereModel);
@@ -52,9 +46,8 @@ export function setup() {
   for (let i = 0; i < sphereGeometry.indices.length; i++) {
     colors1.push(...Object.values(randomColor()));
   }
-  sphere = new SNOWY.Model(sphereGeometry, colors1, undefined, {
-    primitive: 'LINES'
-  });
+  sphere = new SNOWY.Model(sphereGeometry, colors1);
+  sphere.primitive = 'LINES';
   sphere.translateY(0.9);
   scene.add(sphere);
 
