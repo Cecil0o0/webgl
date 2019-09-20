@@ -1,6 +1,6 @@
 <template>
   <Layout class="layout" @click.native="clickHandler">
-    <div class="controls">
+    <div class="controls" @click.stop>
       <div>
         <div>光源颜色</div>
         <VueColorPicker v-model="colors" />
@@ -36,6 +36,7 @@ export default {
   },
   watch: {
     value(newVal) {
+      console.log(newVal);
       ambientLight.set(null, newVal);
     },
     colors(newVal) {
@@ -71,9 +72,6 @@ export default {
     padding: 15px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
-    .vc-slider-swatches {
-      display: none;
-    }
     > div {
       display: flex;
       justify-content: flex-start;
