@@ -25,6 +25,14 @@ class ModelBufferInfo {
       stride?: 0;
       offset?: 0;
     };
+    a_Normal?: {
+      buffer: Float32Array;
+      type?: number;
+      normalize?: false;
+      floatNumsPerElement?: 3;
+      stride?: 0;
+      offset?: 0;
+    };
     [key: string]: any;
   };
   indices?: IndicesArray;
@@ -44,11 +52,13 @@ export default class Model extends Object3D {
   program: WebGLProgram;
   primitive: string = 'TRIANGLES';
   renderType: string = 'drawElements';
-  // 位置、颜色、纹理等缓冲数据
+  // 位置、颜色、纹理、法向量等缓冲数据
   bufferInfo: ModelBufferInfo;
   // 矩阵数据
   uniforms: Uniforms = {
-    u_MVPMatrix: mat4.create()
+    u_MVPMatrix: mat4.create(),
+    u_ModelMatrix: mat4.create(),
+    u_NormalMatrix: mat4.create()
   };
   // shader源码
   shaderSource: {
@@ -78,6 +88,12 @@ export default class Model extends Object3D {
         },
         a_Color: {
           buffer: Float32Array.from(colors)
+        },
+        a_Normal: {
+          buffer:
+            geometry.normals ||
+            Float32Array.from({ length: geometry.positions.length }, () => 1),
+          floatNumsPerElement: 3
         }
       },
       indices: geometry.indices
@@ -108,6 +124,8 @@ export default class Model extends Object3D {
     }
     // 模型矩阵
     this.uniforms.u_ModelMatrix = modelMatrix;
+    // 法向量矩阵
+    this.uniforms.u_NormalMatrix = modelMatrix;
 
     // 视图矩阵
     mat4.multiply(

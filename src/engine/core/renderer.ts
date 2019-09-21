@@ -68,10 +68,10 @@ function uploadAttribsData(gl: WebGLRenderingContext, model: Model) {
     console_time('upload GPU Data' + i);
     const attribInfo = gl.getActiveAttrib(program, i);
     const attribName = attribInfo.name;
+    const attribConfig = model.bufferInfo.attributes[attribName];
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
     const attribLocation = gl.getAttribLocation(program, attribName);
     gl.enableVertexAttribArray(attribLocation);
-    const attribConfig = model.bufferInfo.attributes[attribName];
     gl.bufferData(gl.ARRAY_BUFFER, attribConfig.buffer, gl.DYNAMIC_DRAW);
     gl.vertexAttribPointer(
       attribLocation,
@@ -100,7 +100,6 @@ function uploadUniformsData(
   scene: Scene
 ) {
   // 计算平移、旋转、缩放、视图矩阵、投影矩阵（即MVP矩阵）
-  // 需要1ms，很可能是性能瓶颈
   console_time('计算MVP矩阵开销');
   model.preRender(camera.viewMatrix, camera.projectionMatrix);
   console_timeEnd('计算MVP矩阵开销');
@@ -110,27 +109,32 @@ function uploadUniformsData(
     false,
     model.uniforms.u_MVPMatrix
   );
+  gl.uniformMatrix4fv(
+    gl.getUniformLocation(model.program, 'u_NormalMatrix'),
+    false,
+    model.uniforms.u_NormalMatrix
+  );
   console_time('上传环境光数据给GPU');
-  // 默认给个环境光
-  const light = new AmbientLight(vec3.fromValues(255, 255, 255), 1);
-  gl.uniform3fv(
-    gl.getUniformLocation(model.program, 'u_LightColor'),
-    light.color
-  );
-  gl.uniform1f(
-    gl.getUniformLocation(model.program, 'u_LightFactor'),
-    light.intensity
-  );
+  // 默认给环境光
+  const light = new AmbientLight();
+  const uploadAmbientLightData = (light: AmbientLight) => {
+    gl.uniform3fv(
+      gl.getUniformLocation(model.program, 'u_AmbientLightColor'),
+      light.color
+    );
+    gl.uniform1f(
+      gl.getUniformLocation(model.program, 'u_AmbientLightFactor'),
+      light.intensity
+    );
+    gl.uniform3fv(
+      gl.getUniformLocation(model.program, 'u_AmbientLightPosition'),
+      light.position
+    );
+  };
+  uploadAmbientLightData(light);
   scene.lightList.forEach(light => {
     if (light instanceof AmbientLight) {
-      gl.uniform3fv(
-        gl.getUniformLocation(model.program, 'u_LightColor'),
-        light.color
-      );
-      gl.uniform1f(
-        gl.getUniformLocation(model.program, 'u_LightFactor'),
-        light.intensity
-      );
+      uploadAmbientLightData(light);
     }
   });
   console_timeEnd('上传环境光数据给GPU');

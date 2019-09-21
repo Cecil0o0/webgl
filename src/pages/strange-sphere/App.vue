@@ -36,12 +36,11 @@ export default {
   },
   watch: {
     value(newVal) {
-      console.log(newVal);
       ambientLight.set(null, newVal);
     },
     colors(newVal) {
       const { r, g, b } = newVal.rgba;
-      ambientLight.set(vec3.fromValues(r, g, b));
+      ambientLight.set(vec3.fromValues(r / 255, g / 255, b / 255));
     }
   },
   data() {

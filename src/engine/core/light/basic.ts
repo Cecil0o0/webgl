@@ -2,17 +2,19 @@ import { vec3 } from 'gl-matrix';
 import Object3D from '../object3d';
 
 export class Light extends Object3D {
-  color: vec3 = vec3.fromValues(255, 255, 255);
+  color: vec3 = vec3.fromValues(1, 1, 1);
   intensity: number = 1;
-  constructor(color: vec3, intensity: number) {
+  position: vec3 = vec3.fromValues(0, 0, 10);
+  constructor(color?: vec3, intensity?: number, position?: vec3) {
     super();
-    this._set(color, intensity);
+    this._set(color, intensity, position);
   }
-  set(color: vec3, intensity: number) {
-    this._set(color, intensity);
+  set(color: vec3, intensity: number, position: vec3) {
+    this._set(color, intensity, position);
   }
-  _set(color: vec3, intensity: number) {
+  _set(color: vec3, intensity: number, position: vec3) {
     if (color) this.color = color;
     if (intensity !== undefined) this.intensity = intensity;
+    if (position) this.position = position;
   }
 }

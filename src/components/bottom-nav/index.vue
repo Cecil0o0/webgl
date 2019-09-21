@@ -157,7 +157,7 @@ export default {
   right: 0;
   z-index: 1;
   height: 28vw;
-  display: flex;
+  display: none;
   justify-content: space-evenly;
   background-color: #fff;
   border-top-left-radius: 3vw;

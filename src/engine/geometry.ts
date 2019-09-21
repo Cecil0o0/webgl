@@ -1,12 +1,17 @@
-import { ColorArray, GeometryElementData } from "types";
+/**
+ * deprecated
+ */
+import { ColorArray, GeometryElementData } from 'types';
 import { red, pink, blue, purple, cyan, yellow } from './colors';
-import { randomRange, numberLimitRange } from "engine";
+import { randomRange, numberLimitRange } from 'engine';
 
 const colors: ColorArray[] = [red, pink, blue, purple, cyan, yellow];
 
 /**
  * 通过宽度、高度、深度创建立方体顶点数组以及元素索引数组
  * 后续可通过gl.drawArrays 或 gl.drawwElements绘制
+ *
+ * 和engine中cubeGeometry不同点是：此处color和position使用同一个buffer而cubeGeometry不是
  * @param width
  * @param height
  * @param depth
@@ -17,15 +22,15 @@ export function createCube(width: number, height: number, depth: number) {
   let zeroY = height / 2;
   let zeroZ = depth / 2;
   const positions: [number, number, number][] = [
-    [-zeroX, -zeroY, zeroZ],  //V0
-    [zeroX, -zeroY, zeroZ],  //V1
-    [zeroX, zeroY, zeroZ],   //V2
-    [-zeroX, zeroY, zeroZ],  //V3
-    [-zeroX, -zeroY, -zeroZ],//V4
+    [-zeroX, -zeroY, zeroZ], //V0
+    [zeroX, -zeroY, zeroZ], //V1
+    [zeroX, zeroY, zeroZ], //V2
+    [-zeroX, zeroY, zeroZ], //V3
+    [-zeroX, -zeroY, -zeroZ], //V4
     [-zeroX, zeroY, -zeroZ], //V5
-    [zeroX, zeroY, -zeroZ],  //V6
-    [zeroX, -zeroY, -zeroZ]  //V7
-  ]
+    [zeroX, zeroY, -zeroZ], //V6
+    [zeroX, -zeroY, -zeroZ] //V7
+  ];
 
   // 六个面索引
   const CUBE_FACE_INDICES: [number, number, number, number][] = [
@@ -44,8 +49,8 @@ export function createCube(width: number, height: number, depth: number) {
     yellow, // 左
     cyan, // 右
     pink, // 上
-    blue  // 下
-  ]
+    blue // 下
+  ];
 
   let vertices: number[] = [];
   let indices: number[] = [];
@@ -72,34 +77,40 @@ export function createCube(width: number, height: number, depth: number) {
   return {
     indices: new Uint8Array(indices),
     vertices: new Float32Array(vertices)
-  }
+  };
 }
 
 /**
  * 创建球体，默认用三角图元装配
  * 纬度平面顶点数首尾共用一个顶点
  * 即顶点总数为 (heightSegments - 1) * widthSegments + 2
- * 缺点是算法稍微复杂一些以及不能只能使用渐变色
+ * 缺点是算法稍微复杂一些，但顶点数量减少从而减少浏览器内存占用
+ *
+ * 和engine中sphereGeometry不同点是：color和position使用同一个buffer而sphereGeometry不是
  */
-export function createSphere(radius: number, widthSegments: number, heightSegments: number): GeometryElementData {
+export function createSphere(
+  radius: number,
+  widthSegments: number,
+  heightSegments: number
+): GeometryElementData {
   radius = radius < 1 ? 1 : radius > 100 ? 100 : radius;
 
   const normalizeRadius = radius / 100;
 
   const vertices: number[] = [];
   const indices: number[] = [];
-  const getColor = () => colors[randomRange(0, 5)]
+  const getColor = () => colors[randomRange(0, 5)];
 
   // generate vertices
   // 取边界
   const yUnitRadian = Math.PI / heightSegments;
-  const perWidthRadian = 2 * Math.PI / widthSegments;
+  const perWidthRadian = (2 * Math.PI) / widthSegments;
   // top vertex
   vertices.push(0, normalizeRadius, 0, ...getColor());
   for (let i = 1; i < heightSegments; i++) {
     const y = normalizeRadius * Math.cos(yUnitRadian * i);
     const perWidthRadius = normalizeRadius * Math.sin(yUnitRadian * i);
-    // 为什么要倒着来？因为算出来的点的数字顺序刚好是三角形逆时针的绘制方向，便于后续处理
+    // 为什么要倒着来？因为算出来的点的数字顺序刚好是三角形逆时针的绘制方向，纯粹方便后续计算
     for (let j = widthSegments - 1; j >= 0; j--) {
       const x = perWidthRadius * Math.cos(perWidthRadian * j);
       const z = perWidthRadius * Math.sin(perWidthRadian * j);
@@ -107,7 +118,7 @@ export function createSphere(radius: number, widthSegments: number, heightSegmen
     }
   }
   // bottom vertex
-  vertices.push(0, -normalizeRadius, 0, ...getColor())
+  vertices.push(0, -normalizeRadius, 0, ...getColor());
 
   // generate indices
   for (let i = 1; i <= widthSegments; i++) {
@@ -115,7 +126,7 @@ export function createSphere(radius: number, widthSegments: number, heightSegmen
     if (i === widthSegments) {
       indices.push(0, i, 1);
     } else {
-      indices.push(0, i, i + 1)
+      indices.push(0, i, i + 1);
     }
   }
   // for 找规律
@@ -141,24 +152,16 @@ export function createSphere(radius: number, widthSegments: number, heightSegmen
         indices.push(
           start + j,
           start + j + widthSegments,
-          start + 1 + widthSegments,
+          start + 1 + widthSegments
         );
-        indices.push(
-          start + j,
-          start + 1 + widthSegments,
-          start + 1
-        );
+        indices.push(start + j, start + 1 + widthSegments, start + 1);
       } else {
         indices.push(
           start + j,
           start + j + widthSegments,
-          start + j + widthSegments + 1,
+          start + j + widthSegments + 1
         );
-        indices.push(
-          start + j,
-          start + j + widthSegments + 1,
-          start + j + 1,
-        )
+        indices.push(start + j, start + j + widthSegments + 1, start + j + 1);
       }
     }
   }
@@ -169,31 +172,39 @@ export function createSphere(radius: number, widthSegments: number, heightSegmen
     if (i === widthSegments) {
       indices.push(last, last - i, last - 1);
     } else {
-      indices.push(last, last - i, last - 1 - i)
+      indices.push(last, last - i, last - 1 - i);
     }
   }
 
   return {
     indices: Uint8Array.from(indices),
     vertices: Float32Array.from(vertices)
-  }
+  };
 }
 
 /**
  * 创建圆锥体，使用三角图元装配，支持三角图元单个配色
  */
 
-export function createCone(topRadius: number, bottomRadius: number, widthSegments: number, heightSegments: number, height: number): GeometryElementData {
-  const indices: number[] = [], vertices: number[] = [];
+export function createCone(
+  topRadius: number,
+  bottomRadius: number,
+  widthSegments: number,
+  heightSegments: number,
+  height: number
+): GeometryElementData {
+  const indices: number[] = [],
+    vertices: number[] = [];
   // 归一化半径和高度
   const topNormalizeRadius = numberLimitRange(topRadius, 1, 100) / 100;
   const bottomNormalizeRadius = numberLimitRange(bottomRadius, 1, 100) / 100;
   const normalizeHeight = numberLimitRange(height, 1, 100) / 100;
-  const getColor = () => colors[randomRange(0, 5)]
+  const getColor = () => colors[randomRange(0, 5)];
 
   // 经度平面平均份数
-  const xzAxisPerRadian = 2 * Math.PI / widthSegments;
-  const xzAxisPerRadius = (bottomNormalizeRadius - topNormalizeRadius) / widthSegments;
+  const xzAxisPerRadian = (2 * Math.PI) / widthSegments;
+  const xzAxisPerRadius =
+    (bottomNormalizeRadius - topNormalizeRadius) / widthSegments;
   const yUnitHeight = normalizeHeight / heightSegments;
   vertices.push(0, 0, 0, ...getColor());
   for (let i = 0; i <= heightSegments; i++) {
@@ -219,11 +230,11 @@ export function createCone(topRadius: number, bottomRadius: number, widthSegment
         i * widthSegments + j,
         (i + 1) * widthSegments + j + 1,
         i * widthSegments + j + 1
-      )
+      );
     }
   }
   // 绘制底面
-  const last = vertices.length / 7 - 1
+  const last = vertices.length / 7 - 1;
   for (let i = widthSegments + 1; i > 0; i--) {
     indices.push(last, last - i + 1, last - i);
   }
@@ -231,5 +242,5 @@ export function createCone(topRadius: number, bottomRadius: number, widthSegment
   return {
     indices: Uint8Array.from(indices),
     vertices: Float32Array.from(vertices)
-  }
+  };
 }

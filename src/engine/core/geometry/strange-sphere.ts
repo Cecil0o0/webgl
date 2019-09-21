@@ -1,9 +1,7 @@
 import Geometry from './basic';
 import { IndicesArray, PositionsArray } from 'types';
 
-export class StrangeSphereGeometry extends Geometry {
-  indices: IndicesArray;
-  positions: PositionsArray;
+export class RadialLineGeometry extends Geometry {
   constructor() {
     super();
     this.reCreate();

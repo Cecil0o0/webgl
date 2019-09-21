@@ -1,14 +1,6 @@
-import {PositionsArray, IndicesArray} from 'types';
 import Geometry from './basic';
 
-export type GeometryMeta = {
-  positions: PositionsArray;
-  indices: IndicesArray;
-};
-
 export class SphereGeometry extends Geometry {
-  indices: IndicesArray
-  positions: PositionsArray
   constructor(radius: number, widthSegments: number, heightSegments: number) {
     super();
     radius = radius < 1 ? 1 : radius > 100 ? 100 : radius;
@@ -68,16 +60,16 @@ export class SphereGeometry extends Geometry {
         // 此等式表示纬度平面中最后一个顶点作为绘制三角形的起点
         if (j === widthSegments) {
           indices.push(
-              start + j,
-              start + j + widthSegments,
-              start + 1 + widthSegments
+            start + j,
+            start + j + widthSegments,
+            start + 1 + widthSegments
           );
           indices.push(start + j, start + 1 + widthSegments, start + 1);
         } else {
           indices.push(
-              start + j,
-              start + j + widthSegments,
-              start + j + widthSegments + 1
+            start + j,
+            start + j + widthSegments,
+            start + j + widthSegments + 1
           );
           indices.push(start + j, start + j + widthSegments + 1, start + j + 1);
         }
