@@ -127,7 +127,7 @@ function uploadUniformsData(
       light.intensity
     );
     gl.uniform3fv(
-      gl.getUniformLocation(model.program, 'u_AmbientLightPosition'),
+      gl.getUniformLocation(model.program, 'u_LightPosition'),
       light.position
     );
   };

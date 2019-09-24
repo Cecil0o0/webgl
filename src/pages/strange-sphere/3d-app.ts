@@ -22,7 +22,7 @@ function animate() {
   radialLine.rotateY(radian);
   sphere.rotateY(radian);
   cube.rotateY(radian1);
-  cube.rotateX(radian1);
+  // cube.rotateX(radian1);
   renderer.render(scene, camera);
 }
 

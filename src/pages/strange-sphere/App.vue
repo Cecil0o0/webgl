@@ -11,7 +11,7 @@
           v-model="value"
           :width="200"
           :min="0"
-          :max="1"
+          :max="defaultAmbientIntensity"
           :interval="0.01"
         />
       </div>
@@ -24,6 +24,7 @@ import Layout from '@/components/layout';
 import { Slider } from 'vue-color';
 import { setup, manager, ambientLight } from './3d-app';
 import { vec3 } from 'gl-matrix';
+import { defaultAmbientIntensity } from 'engine/core/light/ambient';
 
 export default {
   components: {
@@ -45,7 +46,8 @@ export default {
   },
   data() {
     return {
-      value: 1,
+      defaultAmbientIntensity,
+      value: defaultAmbientIntensity,
       colors: { r: 255, g: 255, b: 255 }
     };
   },

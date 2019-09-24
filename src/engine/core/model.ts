@@ -92,7 +92,7 @@ export default class Model extends Object3D {
         a_Normal: {
           buffer:
             geometry.normals ||
-            Float32Array.from({ length: geometry.positions.length }, () => 1),
+            Float32Array.from({ length: geometry.positions.length }, () => 0),
           floatNumsPerElement: 3
         }
       },
@@ -124,8 +124,6 @@ export default class Model extends Object3D {
     }
     // 模型矩阵
     this.uniforms.u_ModelMatrix = modelMatrix;
-    // 法向量矩阵
-    this.uniforms.u_NormalMatrix = modelMatrix;
 
     // 视图矩阵
     mat4.multiply(
@@ -133,6 +131,10 @@ export default class Model extends Object3D {
       viewMatrix,
       this.uniforms.u_ModelMatrix
     );
+
+    // 法向量矩阵
+    this.uniforms.u_NormalMatrix = modelMatrix;
+
     // 投影矩阵
     mat4.multiply(
       this.uniforms.u_MVPMatrix,

@@ -9,7 +9,9 @@ attribute vec3 a_Normal;
 varying vec4 v_Color;
 // 传递给片元着色器的法向量
 varying vec3 v_Normal;
-// 矩阵
+// 传递给片元着色器的顶点位置
+varying vec3 v_Position;
+// MVP矩阵
 uniform mat4 u_Matrix;
 // 模型矩阵
 uniform mat4 u_NormalMatrix;
@@ -20,4 +22,6 @@ void main() {
   v_Color = a_Color;
 
   v_Normal = mat3(u_NormalMatrix) * a_Normal;
+
+  v_Position = mat3(u_NormalMatrix) * a_Position;
 }
